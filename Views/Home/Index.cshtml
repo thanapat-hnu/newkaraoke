@@ -1,8 +1,23 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<newkaraoke.Models.db.User>
+
+@{
+    Layout = "";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div>
+    <h1>Users</h1>
+
+    <table border="1">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+        </tr>
+
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Name</td>
+            </tr>
+        }
+    </table>
 </div>
