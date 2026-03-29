@@ -156,6 +156,7 @@ public partial class KaraokeDbContext : DbContext
             entity.Property(e => e.Email).HasMaxLength(150);
             entity.Property(e => e.Name).HasMaxLength(100);
             entity.Property(e => e.Password).HasMaxLength(255);
+            entity.Property(e => e.Phone).HasMaxLength(20);
             entity.Property(e => e.ProfileImg).HasMaxLength(255);
             entity.Property(e => e.Role)
                 .HasDefaultValueSql("'customer'")

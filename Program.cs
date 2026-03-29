@@ -19,6 +19,7 @@ var connectionString = $"server={server};port={port};database={database};user={u
 builder.Services.AddDbContext<KaraokeDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect((connectionString))
     ));
+    
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 

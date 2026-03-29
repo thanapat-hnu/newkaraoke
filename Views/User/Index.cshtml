@@ -1,0 +1,218 @@
+﻿@model newkaraoke.ViewModels.Register;
+@{
+    Layout = "_IndexLayout";
+}
+
+<div>
+    <!-- ══ HERO ═══════════════════════════════════════════════ -->
+    <section class="hero-section">
+        <div class="container-xl px-4 py-5">
+            <div class="row align-items-center g-5">
+
+                <!-- Left -->
+                <div class="col-md-6">
+                    <div class="eyebrow mb-4">เปิดทุกวัน 14:00 – 02:00 น.</div>
+                    <h1 class="hero-h1">
+                        ร้อง<br>
+                        <span class="text-outline-ink">สนุก.</span>
+                    </h1>
+                    <p class="text-secondary mb-4" style="font-size:.95rem;line-height:1.9;max-width:380px;">
+                        คาราโอเกะพรีเมียมกลางใจเมือง เพลงกว่า 50,000 เพลง ห้องหลากหลายขนาด
+                        รองรับตั้งแต่คู่จนถึงปาร์ตี้ใหญ่
+                    </p>
+                    <a href="booking" class="btn btn-dark px-4 py-3" style="font-size:.85rem;">จองห้องเลย →</a>
+                </div>
+
+                <!-- Right — Stat Cards -->
+                <div class="col-md-6">
+                    <!-- Bootstrap list-group ทำ stat list ได้เลย -->
+                    <div class="list-group rounded-3" style="gap:1px;">
+                        <div
+                            class="list-group-item stat-card-item d-flex justify-content-between align-items-center px-4 py-3 border-0 mb-px">
+                            <span style="font-size:.75rem;color:var(--ns-ink3);">ห้องคาราโอเกะ</span>
+                            <span class="stat-n-lg">18</span>
+                        </div>
+                        <div
+                            class="list-group-item stat-card-item d-flex justify-content-between align-items-center px-4 py-3 border-0 mb-px">
+                            <span style="font-size:.75rem;color:var(--ns-ink3);">เพลงในระบบ</span>
+                            <span class="stat-n-lg">50K+</span>
+                        </div>
+                        <div
+                            class="list-group-item stat-card-item d-flex justify-content-between align-items-center px-4 py-3 border-0 mb-px">
+                            <span style="font-size:.75rem;color:var(--ns-ink3);">คะแนนรีวิว</span>
+                            <span class="stat-n-lg">4.9★</span>
+                        </div>
+                        <div
+                            class="list-group-item stat-card-item d-flex justify-content-between align-items-center px-4 py-3 border-0">
+                            <span style="font-size:.75rem;color:var(--ns-ink3);">ลูกค้าต่อเดือน</span>
+                            <span class="stat-n-lg">2,400</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ ABOUT ════════════════════════════════════════════════ -->
+    <section class="about-section py-6" style="padding: 6rem 0; position:relative;">
+        <div class="container-xl px-4" style="position:relative;z-index:1;">
+            <div class="row align-items-center g-5">
+
+                <div class="col-md-5">
+                    <div class="about-label mb-3"
+                         style="font-family:'Kanit',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(242,240,235,.35);">
+                        เกี่ยวกับเรา</div>
+                        <h2 class="about-h2 mb-3">
+                            <span class="text-outline-light">พื้นที่</span><br>
+                            สำหรับ<br>ทุกคน
+                        </h2>
+                        <p style="font-size:.93rem;color:rgba(242,240,235,.55);line-height:1.9;">
+                            Neon Star เปิดมาตั้งแต่ 2018 ด้วยความเชื่อว่าคาราโอเกะคือสถานที่ปลดปล่อยตัวเอง
+                            ไม่ว่าจะเสียงดีหรือไม่ ทุกคนสมควรมีช่วงเวลาที่ดีกับเพื่อนๆ ครอบครัว หรือแม้แต่คนเดียว
+                        </p>
+                    </div>
+
+                    <div class="col-md-7">
+                        <!-- Bootstrap vstack ทำ list ได้ -->
+                        <div class="vstack gap-1">
+                            <div class="feat-item d-flex align-items-center gap-3 p-3 rounded-1">
+                                <span style="font-size:1.3rem;width:36px;text-align:center;">🎤</span>
+                                <div>
+                                    <div class="fw-bold text-white" style="font-family:'Kanit',sans-serif;font-size:.9rem;">
+                                        ไมโครโฟนพรีเมียม</div>
+                                        <div style="font-size:.78rem;color:rgba(242,240,235,.4);">Shure & Sennheiser ในทุกห้อง
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="feat-item d-flex align-items-center gap-3 p-3 rounded-1">
+                                    <span style="font-size:1.3rem;width:36px;text-align:center;">📺</span>
+                                    <div>
+                                        <div class="fw-bold text-white" style="font-family:'Kanit',sans-serif;font-size:.9rem;">
+                                            จอ 4K Ultra HD</div>
+                                            <div style="font-size:.78rem;color:rgba(242,240,235,.4);">ตั้งแต่ 55" ถึง 100"
+                                                ขึ้นกับห้อง</div>
+                                            </div>
+                                        </div>
+                                        <div class="feat-item d-flex align-items-center gap-3 p-3 rounded-1">
+                                            <span style="font-size:1.3rem;width:36px;text-align:center;">🎵</span>
+                                            <div>
+                                                <div class="fw-bold text-white" style="font-family:'Kanit',sans-serif;font-size:.9rem;">
+                                                    เพลงใหม่ทุกสัปดาห์</div>
+                                                    <div style="font-size:.78rem;color:rgba(242,240,235,.4);">ไทย อังกฤษ เกาหลี ญี่ปุ่น จีน
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="feat-item d-flex align-items-center gap-3 p-3 rounded-1">
+                                                <span style="font-size:1.3rem;width:36px;text-align:center;">🍱</span>
+                                                <div>
+                                                    <div class="fw-bold text-white" style="font-family:'Kanit',sans-serif;font-size:.9rem;">
+                                                        อาหาร & เครื่องดื่ม</div>
+                                                        <div style="font-size:.78rem;color:rgba(242,240,235,.4);">เมนูครบ สั่งได้ตลอดเวลาที่จอง
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="feat-item d-flex align-items-center gap-3 p-3 rounded-1">
+                                                    <span style="font-size:1.3rem;width:36px;text-align:center;">🅿️</span>
+                                                    <div>
+                                                        <div class="fw-bold text-white" style="font-family:'Kanit',sans-serif;font-size:.9rem;">
+                                                            ที่จอดรถฟรี</div>
+                                                            <div style="font-size:.78rem;color:rgba(242,240,235,.4);">รองรับ 200 คัน ในอาคาร</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- ══ ROOMS ════════════════════════════════════════════════ -->
+                                <section class="rooms-section py-5">
+                                    <div class="container-xl px-4">
+                                        <div class="sec-label">ห้องของเรา</div>
+                                        <h2 class="font-kanit fw-black mb-4" style="font-size:clamp(2rem,4vw,3.5rem);letter-spacing:-1.5px;">
+                                            เลือกห้องที่ใช่</h2>
+
+                                            <!-- Bootstrap row/col grid แทน custom grid -->
+                                            <div class="row g-0" style="border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
+                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                    <div class="room-card-item p-4 h-100">
+                                                        <div class="rc-num">01</div>
+                                                        <div style="font-size:1.8rem;" class="mb-3">🎤</div>
+                                                        <div class="fw-bold font-kanit mb-1">Galaxy S</div>
+                                                        <div class="text-secondary small mb-3">ห้องเล็ก · 2–4 คน</div>
+                                                        <div class="rc-price-lg">฿390<span class="fw-normal text-secondary"
+                                                                                               style="font-size:.72rem;">/ชม.</span></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12 col-sm-6 col-lg-4">
+                                                        <div class="room-card-item p-4 h-100" style="border-left:1px solid var(--ns-border);">
+                                                            <div class="rc-num">02</div>
+                                                            <div style="font-size:1.8rem;" class="mb-3">🎵</div>
+                                                            <div class="fw-bold font-kanit mb-1">Neon M</div>
+                                                            <div class="text-secondary small mb-3">ห้องกลาง · 4–8 คน</div>
+                                                            <div class="rc-price-lg">฿590<span class="fw-normal text-secondary"
+                                                                                                   style="font-size:.72rem;">/ชม.</span></div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12 col-sm-6 col-lg-4">
+                                                            <div class="room-card-item p-4 h-100" style="border-left:1px solid var(--ns-border);">
+                                                                <div class="rc-num">03</div>
+                                                                <div style="font-size:1.8rem;" class="mb-3">🎶</div>
+                                                                <div class="fw-bold font-kanit mb-1">Cyber M</div>
+                                                                <div class="text-secondary small mb-3">ห้องกลาง · 4–8 คน</div>
+                                                                <div class="rc-price-lg">฿590<span class="fw-normal text-secondary"
+                                                                                                       style="font-size:.72rem;">/ชม.</span></div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12 col-sm-6 col-lg-4" style="border-top:1px solid var(--ns-border);">
+                                                                <div class="room-card-item p-4 h-100">
+                                                                    <div class="rc-num">04</div>
+                                                                    <div style="font-size:1.8rem;" class="mb-3">🎸</div>
+                                                                    <div class="fw-bold font-kanit mb-1">Star L</div>
+                                                                    <div class="text-secondary small mb-3">ห้องใหญ่ · 8–12 คน</div>
+                                                                    <div class="rc-price-lg">฿890<span class="fw-normal text-secondary"
+                                                                                                           style="font-size:.72rem;">/ชม.</span></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-12 col-sm-6 col-lg-4"
+                                                                     style="border-top:1px solid var(--ns-border);border-left:1px solid var(--ns-border);">
+                                                                    <div class="room-card-item p-4 h-100">
+                                                                        <div class="rc-num">05</div>
+                                                                        <div style="font-size:1.8rem;" class="mb-3">🎹</div>
+                                                                        <div class="fw-bold font-kanit mb-1">Aurora L</div>
+                                                                        <div class="text-secondary small mb-3">ห้องใหญ่ · 8–12 คน</div>
+                                                                        <div class="rc-price-lg">฿890<span class="fw-normal text-secondary"
+                                                                                                               style="font-size:.72rem;">/ชม.</span></div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-12 col-sm-6 col-lg-4"
+                                                                         style="border-top:1px solid var(--ns-border);border-left:1px solid var(--ns-border);">
+                                                                        <div class="room-card-item p-4 h-100">
+                                                                            <div class="rc-num">06</div>
+                                                                            <div style="font-size:1.8rem;" class="mb-3">🎺</div>
+                                                                            <div class="fw-bold font-kanit mb-1">VIP Galaxy</div>
+                                                                            <div class="text-secondary small mb-3">VIP Suite · 10–20 คน</div>
+                                                                            <div class="rc-price-lg">฿1,990<span class="fw-normal text-secondary"
+                                                                                                                     style="font-size:.72rem;">/ชม.</span></div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="text-center mt-4">
+                                                                        <a href="booking" class="btn btn-dark px-4 py-2" style="font-size:.85rem;">จองห้องเลย →</a>
+                                                                    </div>
+                                                                </div>
+                                                            </section>
+
+                                                            <!-- ══ CTA BANNER ═══════════════════════════════════════════ -->
+                                                            <section class="cta-section py-5 text-center">
+                                                                <div class="container" style="max-width:600px;">
+                                                                    <h2 class="font-kanit fw-black mb-2" style="font-size:clamp(2rem,4vw,3rem);letter-spacing:-1.5px;">
+                                                                        พร้อมจะร้องแล้วใช่ไหม?</h2>
+                                                                        <p class="text-secondary mb-4">เลือกห้อง เลือกเวลา จองได้ทันทีทุกวัน</p>
+                                                                        <a href="booking" class="btn btn-dark px-5 py-3" style="font-size:.9rem;">จองห้องเลย →</a>
+                                                                    </div>
+                                                                </section>
+                                                            </div>

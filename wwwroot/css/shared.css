@@ -1,0 +1,119 @@
+/* ============================================================
+   shared.css — Custom เฉพาะส่วนที่ Bootstrap ทำไม่ได้
+   Link ลำดับนี้ในทุกหน้า:
+     1. Bootstrap CSS (CDN)
+     2. shared.css (ไฟล์นี้)
+   ============================================================ */
+
+:root {
+  --ns-bg:        #F2F0EB;
+  --ns-bg2:       #E9E7E1;
+  --ns-bg3:       #DEDAD2;
+  --ns-surface:   #ECEAE4;
+  --ns-ink:       #1C1C1A;
+  --ns-ink2:      #3A3A36;
+  --ns-ink3:      #6B6B65;
+  --ns-border:    rgba(28,28,26,0.10);
+  --ns-border-md: rgba(28,28,26,0.18);
+  --bs-body-bg:   #F2F0EB;
+  --bs-body-color:#1C1C1A;
+  --bs-border-color: rgba(28,28,26,0.12);
+  --bs-font-sans-serif: 'Sarabun', sans-serif;
+}
+
+/* dot pattern */
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: radial-gradient(circle, rgba(28,28,26,.05) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* NAV */
+.navbar {
+  height: 56px;
+  background: rgba(242,240,235,.92) !important;
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--ns-border);
+}
+.navbar-brand {
+  font-family: 'Kanit', sans-serif; font-weight: 900;
+  font-size: 1rem !important; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--ns-ink) !important; line-height: 1;
+}
+.navbar-brand sup {
+  font-size: .42rem; letter-spacing: 1px; color: var(--ns-ink3);
+  font-weight: 400; margin-left: 4px;
+}
+.nav-link { font-size: .82rem; color: var(--ns-ink3) !important; padding: 0 !important; }
+.nav-link:hover, .nav-link.active { color: var(--ns-ink) !important; font-weight: 600; }
+
+/* Buttons — ใช้ .btn-dark และ .btn-outline-secondary */
+.btn-dark {
+  background-color: var(--ns-ink) !important;
+  border-color: var(--ns-ink) !important;
+  font-family: 'Kanit', sans-serif; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase; font-size: .72rem;
+  border-radius: 3px;
+}
+.btn-dark:hover { opacity: .76; }
+.btn-outline-secondary {
+  border-color: var(--ns-border-md) !important; color: var(--ns-ink) !important;
+  font-family: 'Kanit', sans-serif; font-weight: 700;
+  letter-spacing: 1.5px; text-transform: uppercase; font-size: .72rem;
+  border-radius: 3px;
+}
+.btn-outline-secondary:hover { background: var(--ns-bg2) !important; color: var(--ns-ink) !important; }
+.btn-outline-secondary:focus { box-shadow: none; }
+.btn:disabled { opacity: .3; }
+
+/* Form */
+.form-label {
+  font-size: .62rem; color: var(--ns-ink3);
+  letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; margin-bottom: 4px;
+}
+.form-control, .form-select {
+  background: var(--ns-bg); border-color: var(--ns-border-md);
+  color: var(--ns-ink); font-family: 'Sarabun', sans-serif;
+  font-size: .9rem; border-radius: 3px;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--ns-ink); box-shadow: none; background: var(--ns-bg);
+}
+
+/* Card */
+.card { background: var(--ns-surface); border-color: var(--ns-border); border-radius: 4px; }
+
+/* Headings */
+h1,h2,h3,.font-kanit { font-family: 'Kanit', sans-serif; }
+
+/* Section label */
+.sec-label {
+  font-family: 'Kanit', sans-serif; font-size: .65rem; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase; color: var(--ns-ink3);
+  display: flex; align-items: center; gap: 10px; margin-bottom: 1.25rem;
+}
+.sec-label::before { content: '—'; opacity: .4; }
+
+/* Toast */
+.toast { border: none !important; border-radius: 3px !important; }
+.toast.bg-dark { background: var(--ns-ink) !important; }
+
+/* Tags/Badge */
+.badge-ns {
+  padding: 3px 10px; border-radius: 2px; font-family: 'Kanit', sans-serif;
+  font-size: .58rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+}
+.badge-confirmed { background: var(--ns-ink); color: var(--ns-bg); }
+.badge-pending   { background: transparent; border: 1px solid var(--ns-border-md); color: var(--ns-ink3); }
+
+/* Outline text */
+.text-outline-ink { -webkit-text-stroke: 2.5px var(--ns-ink); color: transparent; }
+.text-outline-light { -webkit-text-stroke: 1.5px rgba(242,240,235,.35); color: transparent; }
+
+/* Eyebrow */
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--ns-border-md); color: var(--ns-ink3);
+  font-size: .7rem; padding: 5px 14px; border-radius: 2px;
+  letter-spacing: 2px; text-transform: uppercase;
+}

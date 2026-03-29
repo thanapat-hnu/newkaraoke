@@ -15,9 +15,9 @@ public partial class User
 
     public string Role { get; set; } = null!;
 
-    public DateOnly Birthday { get; set; }
-
     public string? ProfileImg { get; set; }
+
+    public string? Phone { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
