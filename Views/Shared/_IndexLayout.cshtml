@@ -1,0 +1,42 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Star Karaoke</title>
+    <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;900&family=Sarabun:wght@300;400;500&display=swap"
+    rel="stylesheet">
+    <link rel="stylesheet" href="~/css/index.css" />
+    
+</head>
+
+<body>
+    <!-- NAV -->
+    <nav>
+        <div class="logo" onclick="goTo(0)">Neon Star<sup>Karaoke</sup></div>
+        <div class="nav-dots" id="navDots"></div>
+        <div class="nav-right" id="navRight">
+            <button class="nav-btn ghost" onclick="openAuth()">เข้าสู่ระบบ</button>
+            <button class="nav-btn" onclick="goBooking()">จองเลย</button>
+        </div>
+    </nav>
+
+    <!-- PROGRESS -->
+    <div id="progressBar"></div>
+
+    <!-- SIDE INDICATORS -->
+    <div id="secIndicator"></div>
+
+    <!-- SCROLL NAV BTN -->
+    <button id="scrollBtn" onclick="scrollNext()">↓</button>
+
+    @RenderBody()
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="~/js/index.js"></script>
+    
+</body>
+
+</html>
