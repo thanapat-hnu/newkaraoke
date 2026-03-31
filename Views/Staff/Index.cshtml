@@ -1,0 +1,654 @@
+@{
+    Layout = "_StaffLayout";
+}
+<div id="authWrap">
+    <div class="auth-box">
+        <div class="text-uppercase fw-bold mb-4"
+             style="font-family:'Kanit',sans-serif;font-size:.85rem;letter-spacing:3px;color:var(--ns-ink3);">Neon Star ·
+            Admin Panel</div>
+            <h2 class="mb-1" style="font-family:'Kanit',sans-serif;font-size:1.5rem;font-weight:900;letter-spacing:-.5px;">
+                เข้าสู่ระบบ</h2>
+                <p class="text-secondary mb-4" style="font-size:.82rem;">ระบบจัดการสำหรับ Neon Star Karaoke</p>
+
+                <div class="vstack gap-3 mb-3">
+                    <div>
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-control" id="aUser" placeholder="username">
+                    </div>
+                    <div>
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="aPass" placeholder="••••••">
+                    </div>
+                </div>
+
+                <!-- Bootstrap Alert -->
+                <div class="alert alert-danger py-2 small d-none mb-3" id="aErr">Username หรือ Password ไม่ถูกต้อง</div>
+                <button class="btn btn-dark w-100 mb-3" onclick="doLogin()">เข้าสู่ระบบ</button>
+
+                <div class="auth-hint-box">
+                    <strong>admin</strong> / admin123 — Analytics &amp; Dashboard<br>
+                    <strong>it_admin</strong> / it123 — จัดการผู้ใช้ระบบ, โปรโมชั่น, Log<br>
+                    <strong>staff01</strong> / staff123 — จัดการการจอง, ห้อง, ดูโปรโมชั่น
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ MAIN ══════════════════════════════════════════════ -->
+        <div id="main" class="flex-grow-1 overflow-x-hidden">
+
+            <!-- TOPBAR (Bootstrap sticky) -->
+            <div class="topbar d-flex align-items-center justify-content-between px-3">
+                <div class="topbar-title" id="topTitle">Dashboard</div>
+                <div class="d-flex align-items-center gap-2">
+                    <div id="drWrap" class="d-flex gap-1">
+                        <button class="dr-btn active" onclick="setRange(7,this)">7 วัน</button>
+                        <button class="dr-btn" onclick="setRange(30,this)">30 วัน</button>
+                        <button class="dr-btn" onclick="setRange(90,this)">90 วัน</button>
+                        <button class="dr-btn" onclick="setRange(0,this)">ทั้งหมด</button>
+                    </div>
+                    <a href="index.html" class="tl">ลูกค้า ↗</a>
+                </div>
+            </div>
+
+            <!-- ▸ DASHBOARD ────────────────────────────────────── -->
+            <div class="sec active" id="sec-dash">
+                <div class="pg-ttl">Dashboard</div>
+                <div class="pg-sub mb-3" id="dashSub"></div>
+                <div class="kpi-grid mb-3" id="kpiGrid"></div>
+                <div class="row g-3 mb-3">
+                    <div class="col-lg-8">
+                        <div class="cc h-100">
+                            <div class="cc-ttl">รายรับรายวัน <span id="revLbl"
+                                                                       style="font-weight:400;text-transform:none;letter-spacing:0;font-size:.68rem;"></span></div>
+                                <div style="position:relative;height:210px"><canvas id="cRevDay"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="cc h-100">
+                                <div class="cc-ttl">สัดส่วนห้อง</div>
+                                <div style="position:relative;height:180px"><canvas id="cRoomPie"></canvas></div>
+                                <div id="roomPieLg" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="cc">
+                                <div class="cc-ttl">การจองตามวัน</div>
+                                <div style="position:relative;height:190px"><canvas id="cDow"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cc">
+                                <div class="cc-ttl">Peak Hours</div>
+                                <div style="position:relative;height:190px"><canvas id="cPeak"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="cc">
+                                <div class="cc-ttl">อัตราการใช้ห้อง</div>
+                                <div id="occBars"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cc">
+                                <div class="cc-ttl">การจองล่าสุด</div>
+                                <div class="table-responsive">
+                                    <table class="tbl">
+                                        <thead>
+                                            <tr>
+                                                <th>รหัส</th>
+                                                <th>ลูกค้า</th>
+                                                <th>ห้อง</th>
+                                                <th>ยอด</th>
+                                                <th>สถานะ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="recentBdy"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ▸ REVENUE ───────────────────────────────────────── -->
+                <div class="sec" id="sec-revenue">
+                    <div class="pg-ttl">วิเคราะห์รายรับ</div>
+                    <div class="pg-sub mb-3">รายละเอียดรายรับตามช่วงเวลาที่เลือก</div>
+                    <div class="kpi-grid mb-3" id="revKpi"></div>
+                    <div class="cc mb-3">
+                        <div class="cc-ttl">รายรับสะสมรายวัน</div>
+                        <div style="position:relative;height:240px"><canvas id="cRevTrend"></canvas></div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-7">
+                            <div class="cc">
+                                <div class="cc-ttl">รายรับแยกห้อง</div>
+                                <div style="position:relative;height:210px"><canvas id="cRevRoom"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="cc">
+                                <div class="cc-ttl">รายรับแยกช่องทาง</div>
+                                <div style="position:relative;height:180px"><canvas id="cRevPay"></canvas></div>
+                                <div id="revPayLg" class="mt-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cc mb-3">
+                        <div class="cc-ttl">Ranking ห้องตามรายรับ</div>
+                        <div id="topRoomBars"></div>
+                    </div>
+                </div>
+
+                <!-- ▸ ROOMS ANALYTICS ──────────────────────────────── -->
+                <div class="sec" id="sec-rooms">
+                    <div class="pg-ttl">วิเคราะห์ห้อง</div>
+                    <div class="pg-sub mb-3">ประสิทธิภาพแต่ละห้อง</div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="cc">
+                                <div class="cc-ttl">จำนวนการจองแยกห้อง</div>
+                                <div style="position:relative;height:220px"><canvas id="cRoomBk"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cc">
+                                <div class="cc-ttl">รายรับแยกห้อง</div>
+                                <div style="position:relative;height:220px"><canvas id="cRoomRev"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tc mb-3">
+                        <div class="th">
+                            <div class="th-ttl">สรุปรายห้อง</div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>ห้อง</th>
+                                        <th>ประเภท</th>
+                                        <th>จำนวนจอง</th>
+                                        <th>รายรับ</th>
+                                        <th>เฉลี่ย/ครั้ง</th>
+                                        <th>ชม.รวม</th>
+                                        <th>Occupancy</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="roomSumBdy"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ▸ HEATMAP ──────────────────────────────────────── -->
+                <div class="sec" id="sec-heatmap">
+                    <div class="pg-ttl">Heatmap เวลา</div>
+                    <div class="pg-sub mb-3">ความหนาแน่นการจองตามวันและชั่วโมง</div>
+                    <div class="notice mb-3">สีเข้ม = ยอดนิยม · คลิก cell เพื่อดูรายละเอียด</div>
+                    <div class="cc mb-3">
+                        <div class="cc-ttl">วัน × ชั่วโมง</div>
+                        <div id="hmWrap" class="overflow-x-auto"></div>
+                        <div id="hmDetail" class="mt-2 text-secondary" style="font-size:.8rem;min-height:18px;"></div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="cc">
+                                <div class="cc-ttl">ชั่วโมงเฉลี่ยรายวัน</div>
+                                <div style="position:relative;height:200px"><canvas id="cHourly"></canvas></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cc">
+                                <div class="cc-ttl">ระยะเวลาที่นิยม</div>
+                                <div style="position:relative;height:200px"><canvas id="cDurDist"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ▸ CUSTOMERS ─────────────────────────────────────── -->
+                <div class="sec" id="sec-customers">
+                    <div class="pg-ttl">ลูกค้า</div>
+                    <div class="pg-sub mb-3">พฤติกรรมและมูลค่าลูกค้า</div>
+                    <div class="kpi-grid mb-3" id="custKpi"></div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="cc">
+                                <div class="cc-ttl">ลูกค้าใหม่ vs เดิม</div>
+                                <div style="position:relative;height:200px"><canvas id="cNewRet"></canvas></div>
+                                <div id="newRetLg" class="mt-2"></div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="cc">
+                                <div class="cc-ttl">ขนาดกลุ่ม</div>
+                                <div style="position:relative;height:200px"><canvas id="cGrpSz"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tc mb-3">
+                        <div class="th">
+                            <div class="th-ttl">Top ลูกค้าตาม LTV</div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>ชื่อ</th>
+                                        <th>อีเมล</th>
+                                        <th>จอง</th>
+                                        <th>รายรับรวม</th>
+                                        <th>เฉลี่ย/ครั้ง</th>
+                                        <th>ห้องโปรด</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="topCustBdy"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ▸ BOOKINGS ──────────────────────────────────────── -->
+                <div class="sec" id="sec-bookings">
+                    <div class="pg-ttl">จัดการการจอง</div>
+                    <div class="pg-sub mb-3">ดู แก้ไข ยืนยัน และยกเลิกการจอง</div>
+                    <div class="tc mb-3">
+                        <div class="th">
+                            <div class="th-ttl">รายการจองทั้งหมด</div>
+                            <!-- Bootstrap input-group style filters -->
+                            <div class="d-flex gap-2 flex-wrap">
+                                <input class="ti" id="bkQ" placeholder="ค้นหา..." oninput="renderBkTbl()" style="width:180px;">
+                                <select class="ti" id="bkSt" onchange="renderBkTbl()" style="width:130px;">
+                                    <option value="">สถานะทั้งหมด</option>
+                                    <option value="confirmed">ยืนยันแล้ว</option>
+                                    <option value="pending">รอดำเนินการ</option>
+                                </select>
+                                <select class="ti" id="bkRm" onchange="renderBkTbl()" style="width:130px;">
+                                    <option value="">ห้องทั้งหมด</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>รหัส</th>
+                                        <th>ลูกค้า</th>
+                                        <th>ห้อง</th>
+                                        <th>วันที่</th>
+                                        <th>เวลา</th>
+                                        <th>คน</th>
+                                        <th>ยอด</th>
+                                        <th>ชำระ</th>
+                                        <th>สถานะ</th>
+                                        <th>จัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="bkTblBdy"></tbody>
+                            </table>
+                        </div>
+                        <div class="px-3 py-2 text-secondary small" id="bkCnt"></div>
+                    </div>
+                </div>
+
+                <!-- ▸ USERS ─────────────────────────────────────────── -->
+                <div class="sec" id="sec-users">
+                    <div class="pg-ttl">จัดการผู้ใช้งานระบบ</div>
+                    <div class="pg-sub mb-3">เพิ่ม แก้ไข และกำหนดสิทธิ์ผู้ใช้งาน Back-office</div>
+                    <div class="notice info mb-3">ผู้ใช้ในหน้านี้คือบัญชี Back-office (admin / it / staff) ไม่ใช่ลูกค้าหน้าเว็บ
+                    </div>
+                    <div class="tc mb-3">
+                        <div class="th">
+                            <div class="th-ttl">บัญชีระบบ</div>
+                            <button class="ab" onclick="openUserModal()">+ เพิ่มผู้ใช้</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>ชื่อ</th>
+                                        <th>อีเมล</th>
+                                        <th>Role</th>
+                                        <th>สถานะ</th>
+                                        <th>สร้างโดย</th>
+                                        <th>จัดการ</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userBdy"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="cc mb-3">
+                        <div class="cc-ttl">สิทธิ์การเข้าถึงตาม Role</div>
+                        <div class="table-responsive">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>สิทธิ์</th>
+                                        <th>Admin</th>
+                                        <th>IT</th>
+                                        <th>Staff</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>ดู Dashboard / Analytics</td>
+                                        <td>✓</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>จัดการการจอง (ยืนยัน/ยกเลิก)</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>✓</td>
+                                    </tr>
+                                    <tr>
+                                        <td>จัดการห้อง (เพิ่ม/แก้ไข/ปิด/ลบ)</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>✓</td>
+                                    </tr>
+                                    <tr>
+                                        <td>จัดการโปรโมชั่น (สร้าง/แก้ไข/ลบ)</td>
+                                        <td>—</td>
+                                        <td>✓</td>
+                                        <td>—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ดูโปรโมชั่น</td>
+                                        <td>—</td>
+                                        <td>✓</td>
+                                        <td>✓</td>
+                                    </tr>
+                                    <tr>
+                                        <td>จัดการผู้ใช้ระบบ</td>
+                                        <td>—</td>
+                                        <td>✓</td>
+                                        <td>—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ดู Activity Log</td>
+                                        <td>—</td>
+                                        <td>✓</td>
+                                        <td>—</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ▸ PROMOTIONS ────────────────────────────────────── -->
+                <div class="sec" id="sec-promos">
+                    <div class="pg-ttl">โปรโมชั่น</div>
+                    <div class="pg-sub mb-3" id="promoSub"></div>
+                    <div id="promoActions" class="mb-3"></div>
+                    <!-- Bootstrap grid for promo cards -->
+                    <div class="row g-px mb-3"
+                         style="--bs-gutter-x:1px;--bs-gutter-y:1px;background:var(--ns-border);border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;"
+                         id="promoGrid"></div>
+                    <div class="tc mb-3">
+                        <div class="th">
+                            <div class="th-ttl">ประวัติการใช้โปรโมชั่น</div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="tbl">
+                                <thead>
+                                    <tr>
+                                        <th>รหัสจอง</th>
+                                        <th>ลูกค้า</th>
+                                        <th>โปรโมชั่น</th>
+                                        <th>ส่วนลด</th>
+                                        <th>วันที่ใช้</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="promoUseBdy"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ▸ ROOM MANAGEMENT ───────────────────────────────── -->
+                <div class="sec" id="sec-room-mgmt">
+                    <div class="pg-ttl">จัดการห้อง</div>
+                    <div class="pg-sub mb-3">เพิ่ม แก้ไข และปิด/เปิดการใช้งานห้องคาราโอเกะ</div>
+                    <div class="notice info mb-3">ห้องที่มีการจองอยู่ไม่สามารถลบได้ — จะถูกตั้งเป็น "ปิดชั่วคราว"
+                        และลบอัตโนมัติเมื่อไม่มีการจองที่ active</div>
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                            <div class="th-ttl">ห้องทั้งหมด</div>
+                            <button class="ab" onclick="openRoomModal()">+ เพิ่มห้อง</button>
+                        </div>
+                        <!-- Bootstrap row grid for room cards -->
+                        <div class="row g-px mb-3"
+                             style="--bs-gutter-x:1px;--bs-gutter-y:1px;background:var(--ns-border);border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;"
+                             id="rmGrid"></div>
+                        <div class="cc mb-3">
+                            <div class="cc-ttl">สรุปสถานะห้อง</div>
+                            <div class="table-responsive">
+                                <table class="tbl">
+                                    <thead>
+                                        <tr>
+                                            <th>ห้อง</th>
+                                            <th>ประเภท</th>
+                                            <th>ความจุ</th>
+                                            <th>ราคา/ชม.</th>
+                                            <th>การจอง active</th>
+                                            <th>สถานะ</th>
+                                            <th>จัดการ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="rmTableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ▸ ACTIVITY LOG ──────────────────────────────────── -->
+                    <div class="sec" id="sec-logs">
+                        <div class="pg-ttl">Activity Log</div>
+                        <div class="pg-sub mb-3">บันทึกกิจกรรมในระบบทั้งหมด</div>
+                        <div class="tc mb-3">
+                            <div class="th">
+                                <div class="th-ttl">รายการกิจกรรม</div>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <select class="ti" id="logTypeFilter" onchange="renderLogs()" style="width:150px;">
+                                        <option value="">ทุกประเภท</option>
+                                        <option value="booking">การจอง</option>
+                                        <option value="room">ห้อง</option>
+                                        <option value="user">ผู้ใช้</option>
+                                        <option value="promo">โปรโมชั่น</option>
+                                        <option value="system">ระบบ</option>
+                                    </select>
+                                    <input class="ti" id="logSearch" placeholder="ค้นหา..." oninput="renderLogs()" style="width:180px;">
+                                    <button class="ab sm" onclick="clearLogs()">ล้าง Log</button>
+                                </div>
+                            </div>
+                            <div id="logList" style="max-height:520px;overflow-y:auto;"></div>
+                            <div class="px-3 py-2 text-secondary small" id="logCount"></div>
+                        </div>
+                    </div>
+
+                </div><!-- /main -->
+
+                <!-- ══ MODALS (Bootstrap) ════════════════════════════════ -->
+
+                <!-- User Modal -->
+                <div class="modal fade" id="modalUser" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalUserTtl">เพิ่มผู้ใช้</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <input type="hidden" id="editUserId">
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6"><label class="form-label">Username</label><input type="text" class="form-control"
+                                                                                                            id="uUsername" placeholder="username"></div>
+                                        <div class="col-6"><label class="form-label">Password</label><input type="password"
+                                                                                                                class="form-control" id="uPass" placeholder="รหัสผ่าน"></div>
+                                            <div class="col-6"><label class="form-label">ชื่อ-นามสกุล</label><input type="text"
+                                                                                                                        class="form-control" id="uName" placeholder="ชื่อ"></div>
+                                                <div class="col-6"><label class="form-label">อีเมล</label><input type="email" class="form-control"
+                                                                                                                     id="uEmail" placeholder="email@company.com"></div>
+                                                    <div class="col-6">
+                                                        <label class="form-label">Role</label>
+                                                        <select class="form-select" id="uRole">
+                                                            <option value="staff">Staff — จัดการการจอง</option>
+                                                            <option value="it">IT — ทุกสิทธิ์</option>
+                                                            <option value="admin">Admin — Dashboard เท่านั้น</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="form-label">สถานะ</label>
+                                                        <select class="form-select" id="uStatus">
+                                                            <option value="active">Active</option>
+                                                            <option value="inactive">Inactive</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="alert alert-danger py-2 small d-none mb-2" id="uErr"></div>
+                                                <div class="vstack gap-2">
+                                                    <button class="btn btn-dark w-100" onclick="saveUser()">บันทึก</button>
+                                                    <button class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">ยกเลิก</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Promo Modal -->
+                                <div class="modal fade" id="modalPromo" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="modalPromoTtl">สร้างโปรโมชั่น</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" id="editPromoId">
+                                                <div class="row g-2 mb-2">
+                                                    <div class="col-6"><label class="form-label">รหัสโปรโมชั่น</label><input type="text"
+                                                                                                                                 class="form-control" id="pCode" placeholder="SUMMER25" style="text-transform:uppercase;">
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="form-label">ประเภทส่วนลด</label>
+                                                        <select class="form-select" id="pType" onchange="togglePromoType()">
+                                                            <option value="percent">% ส่วนลด</option>
+                                                            <option value="fixed">ลดคงที่ (บาท)</option>
+                                                            <option value="free_hour">แถมชั่วโมง</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-6"><label class="form-label" id="pValLbl">ส่วนลด (%)</label><input type="number"
+                                                                                                                                           class="form-control" id="pValue" placeholder="10" min="0"></div>
+                                                        <div class="col-6"><label class="form-label">จำนวนครั้งใช้ได้</label><input type="number"
+                                                                                                                                        class="form-control" id="pLimit" placeholder="50" min="1"></div>
+                                                            <div class="col-6"><label class="form-label">วันเริ่ม</label><input type="date" class="form-control"
+                                                                                                                                    id="pStart"></div>
+                                                                <div class="col-6"><label class="form-label">วันหมดอายุ</label><input type="date"
+                                                                                                                                          class="form-control" id="pEnd"></div>
+                                                                    <div class="col-12"><label class="form-label">เงื่อนไข / คำอธิบาย</label><input type="text"
+                                                                                                                                                        class="form-control" id="pDesc" placeholder="เช่น ใช้ได้เฉพาะวันอาทิตย์"></div>
+                                                                        <div class="col-6">
+                                                                            <label class="form-label">ใช้ได้กับห้อง</label>
+                                                                            <select class="form-select" id="pRoom">
+                                                                                <option value="">ทุกห้อง</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="col-6">
+                                                                            <label class="form-label">สถานะ</label>
+                                                                            <select class="form-select" id="pStatus">
+                                                                                <option value="active">Active</option>
+                                                                                <option value="inactive">Inactive</option>
+                                                                            </select>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="alert alert-danger py-2 small d-none mb-2" id="pErr"></div>
+                                                                    <div class="vstack gap-2">
+                                                                        <button class="btn btn-dark w-100" onclick="savePromo()">บันทึกโปรโมชั่น</button>
+                                                                        <button class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">ยกเลิก</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Booking Detail Modal -->
+                                                    <div class="modal fade" id="modalBk" tabindex="-1">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title">รายละเอียดการจอง</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                </div>
+                                                                <div class="modal-body" id="modalBkBody"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Room Modal -->
+                                                    <div class="modal fade" id="modalRoom" tabindex="-1">
+                                                        <div class="modal-dialog modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="modalRoomTtl">เพิ่มห้อง</h5>
+                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <input type="hidden" id="editRoomId">
+                                                                    <div class="row g-2 mb-2">
+                                                                        <div class="col-6"><label class="form-label">ชื่อห้อง</label><input type="text" class="form-control"
+                                                                                                                                                id="rName" placeholder="เช่น Galaxy S"></div>
+                                                                            <div class="col-6"><label class="form-label">Emoji / ไอคอน</label><input type="text"
+                                                                                                                                                         class="form-control" id="rEmoji" placeholder="🎤" maxlength="2"></div>
+                                                                                <div class="col-6">
+                                                                                    <label class="form-label">ประเภทห้อง</label>
+                                                                                    <select class="form-select" id="rType">
+                                                                                        <option value="ห้องเล็ก">ห้องเล็ก (1–4 คน)</option>
+                                                                                        <option value="ห้องกลาง">ห้องกลาง (4–8 คน)</option>
+                                                                                        <option value="ห้องใหญ่">ห้องใหญ่ (8–12 คน)</option>
+                                                                                        <option value="VIP Suite">VIP Suite (10–20 คน)</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="col-6"><label class="form-label">ความจุสูงสุด (คน)</label><input type="number"
+                                                                                                                                                                 class="form-control" id="rCap" placeholder="8" min="1" max="50"></div>
+                                                                                    <div class="col-6"><label class="form-label">ราคา/ชั่วโมง (฿)</label><input type="number"
+                                                                                                                                                                    class="form-control" id="rPrice" placeholder="590" min="0"></div>
+                                                                                        <div class="col-6">
+                                                                                            <label class="form-label">สถานะ</label>
+                                                                                            <select class="form-select" id="rStatus">
+                                                                                                <option value="active">เปิดใช้งาน</option>
+                                                                                                <option value="disabled">ปิดชั่วคราว</option>
+                                                                                            </select>
+                                                                                        </div>
+                                                                                        <div class="col-12"><label class="form-label">รายละเอียด / อุปกรณ์</label><input type="text"
+                                                                                                                                                                             class="form-control" id="rDesc" placeholder='เช่น จอ 75", ไมค์ 4 ตัว, WIFI'></div>
+                                                                                        </div>
+                                                                                        <div class="alert alert-danger py-2 small d-none mb-2" id="rErr2"></div>
+                                                                                        <div class="vstack gap-2">
+                                                                                            <button class="btn btn-dark w-100" onclick="saveRoom()">บันทึกห้อง</button>
+                                                                                            <button class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">ยกเลิก</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <!-- Toast (Bootstrap) -->
+                                                                        <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
+                                                                            <div id="liveToast" class="toast text-white border-0" role="alert">
+                                                                                <div class="d-flex">
+                                                                                    <div class="toast-body fw-semibold" id="toastTxt" style="font-family:'Kanit',sans-serif;font-size:.8rem;">
+                                                                                    </div>
+                                                                                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
