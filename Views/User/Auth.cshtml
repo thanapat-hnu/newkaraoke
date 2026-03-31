@@ -1,0 +1,203 @@
+@model newkaraoke.ViewModels.Users;
+
+@{
+    Layout = "_LoginLayout";
+}
+
+<div>
+    <!-- AUTH CARD -->
+    <div class="auth-page">
+        <div class="card border-0 w-100" style="max-width:420px;">
+
+            <!-- Tabs (Bootstrap nav-tabs) -->
+            <ul class="nav auth-tabs d-flex" id="authTab" role="tablist">
+                <li class="nav-item flex-fill">
+                    <button class="nav-link active w-100" data-bs-toggle="tab"
+                            data-bs-target="#loginPane">เข้าสู่ระบบ</button>
+                </li>
+                <li class="nav-item flex-fill">
+                    <button class="nav-link w-100" data-bs-toggle="tab"
+                            data-bs-target="#registerPane">สมัครสมาชิก</button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+
+                <!-- LOGIN -->
+                <div class="tab-pane fade p-4 show active" id="loginPane">
+                    <div class="mb-3">
+                        <div class="auth-heading mb-1">ยินดีต้อนรับกลับ</div>
+                        <div class="text-secondary" style="font-size:.83rem;">เข้าสู่ระบบเพื่อจองห้องคาราโอเกะ</div>
+                    </div>
+
+                    <div class="alert alert-danger py-2 small d-none" id="lErr">อีเมลหรือรหัสผ่านไม่ถูกต้อง</div>
+
+                    <form id="loginForm" class="vstack gap-3" asp-controller="user" asp-action="login" method="post">
+                        <div>
+                            <label class="form-label">อีเมล</label>
+                            <input type="email" class="form-control" id="lEmail" placeholder="your@email.com"
+                                   value="demo@demo.demo" asp-for="Email">
+                            </div>
+                            <div>
+                                <label class="form-label">รหัสผ่าน</label>
+                                <input type="password" class="form-control" id="lPass" placeholder="••••••••" value="123456"
+                                       asp-for="Password">
+                                </div>
+                                @* Error จาก Controller *@
+                                @if (TempData["LoginError"] != null)
+                                {
+                                    <div class="alert alert-danger py-2 small">
+                                        @TempData["LoginError"]
+                                    </div>
+                                }
+                                <button type="button" class="btn btn-dark w-100" onclick="doLogin()">เข้าสู่ระบบ</button>
+                            </form>
+
+                            <p class="text-center text-secondary small mt-3 mb-0">
+                                ยังไม่มีบัญชี?
+                                <a href="#" class="text-dark fw-semibold text-decoration-underline"
+                                       onclick="bootstrap.Tab.getOrCreateInstance(document.querySelector('[data-bs-target=\'#registerPane\']')).show()">
+                                    สมัครสมาชิก
+                                </a>
+                            </p>
+                            <div class="text-center text-secondary border-top pt-3 mt-3" style="font-size:.72rem;">
+                                ทดลองใช้: <strong>demo@demo.demo</strong> / <strong>123456</strong>
+                            </div>
+                        </div>
+
+                        <!-- REGISTER -->
+                        <div class="tab-pane fade p-4" id="registerPane">
+                            <div class="mb-3">
+                                <div class="auth-heading mb-1">สร้างบัญชีใหม่</div>
+                                <div class="text-secondary" style="font-size:.83rem;">สมัครฟรี เริ่มจองห้องทันที</div>
+                            </div>
+
+                            <div class="alert alert-danger py-2 small d-none" id="rErr">กรุณากรอกข้อมูลให้ครบ</div>
+
+                            <form id="registerForm" class="vstack gap-3" asp-action="Register" asp-controller="user"
+                                  method="post">
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label">ชื่อ-นามสกุล</label>
+                                        <input type="text" class="form-control" id="Name" placeholder="ชื่อของคุณ"
+                                               value="ธนภัทร หนูบุญมี" asp-for="Name">
+                                            <div id="NameErr" class="text-danger small d-none"></div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <label class="form-label">เบอร์โทรศัพท์</label>
+                                            <input type="tel" class="form-control" id="Phone" placeholder="0812345678"
+                                                   value="0123456789" asp-for="Phone" maxlength="10">
+                                                <div id="PhoneErr" class="text-danger small d-none"></div>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <label class="form-label">อีเมล</label>
+                                                <input type="email" class="form-control" id="Email" placeholder="your@email.com"
+                                                       value="demo@demo.demo" asp-for="Email">
+                                                    <div id="EmailErr" class="text-danger small d-none"></div>
+                                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                                </div>
+
+                                                <div class="col-12">
+                                                    <label class="form-label">รหัสผ่าน (อย่างน้อย 6 ตัว)</label>
+                                                    <input type="password" class="form-control" id="Password" placeholder="••••••••"
+                                                           value="123456" asp-for="Password">
+                                                        <div id="PasswordErr" class="text-danger small d-none"></div>
+                                                        @* Err จาก Controller *@
+                                                    </div>
+                                                </div>
+
+                                                <button type="button" class="btn btn-dark w-100" onclick="doRegister()">สมัครสมาชิก</button>
+                                            </form>
+
+                                            <p class="text-center text-secondary small mt-3 mb-0">
+                                                มีบัญชีแล้ว?
+                                                <a href="#" class="text-dark fw-semibold text-decoration-underline"
+                                                       onclick="bootstrap.Tab.getOrCreateInstance(document.querySelector('[data-bs-target=\'#loginPane\']')).show()">
+                                                    เข้าสู่ระบบ
+                                                </a>
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @if (TempData["ActiveTab"]?.ToString() == "register")
+                            {
+                                <script>
+                                        document.addEventListener("DOMContentLoaded", () => {
+                                            bootstrap.Tab.getOrCreateInstance(
+                                                document.querySelector('[data-bs-target="#registerPane"]')
+                                            ).show();
+                                    });
+                            </script>
+                        }
+                    else if (TempData["ActiveTab"]?.ToString() == "login")
+
+                
+            
+                
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+                
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                        {
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <script>
+                                document.addEventListener("DOMContentLoaded", () => {
+                                    bootstrap.Tab.getOrCreateInstance(
+                                        document.querySelector('[data-bs-target="#loginPane"]')
+                                    ).show();
+                            });
+                    </script>
+
+           
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+       
+           
+           
+           
+           
+           
+           
+           
+           
+                    }
+            
+                }
+            </ div >
+

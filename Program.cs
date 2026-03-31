@@ -1,6 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using newkaraoke.Models.db;
 using Pomelo.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,15 +13,24 @@ var user = Environment.GetEnvironmentVariable("DB_USER");
 var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
 var baseConn = builder.Configuration.GetConnectionString("DefaultConnection");
 
-var connectionString = $"server={server};port={port};database={database};user={user};password={password};{baseConn}";
+var connectionString =
+    $"server={server};port={port};database={database};user={user};password={password};{baseConn}";
+
 // Console.WriteLine(connectionString);
 
 builder.Services.AddDbContext<KaraokeDbContext>(options =>
-    options.UseMySql(connectionString, ServerVersion.AutoDetect((connectionString))
-    ));
-    
+    options.UseMySql(connectionString, ServerVersion.AutoDetect((connectionString)))
+);
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // หมดอายุใน 30 นาที
+    options.Cookie.HttpOnly = true; // ป้องกัน JS อ่าน cookie
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -35,15 +44,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapStaticAssets();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Index}/{action=Index}/{id?}")
+app.MapControllerRoute(name: "default", pattern: "{controller=User}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();

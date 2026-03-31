@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using newkaraoke.Models;
 using newkaraoke.Models.db;
 
-
 namespace newkaraoke.Controllers;
 
 public class HomeController : Controller
@@ -20,5 +19,4 @@ public class HomeController : Controller
         var users = _db.Users.ToList();
         return View(users); // ส่งไปหน้าเว็บ
     }
-
 }

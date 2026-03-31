@@ -19,20 +19,25 @@
 // })();
 // if (sessionStorage.getItem("ns_user")) location.href = "profile";
 
-// function doLogin() {
-//   const email = document.getElementById("lEmail").value.trim();
-//   const pass = document.getElementById("lPass").value;
-//   const u = getUsers().find((u) => u.email === email && u.pass === pass);
-//   const err = document.getElementById("lErr");
-//   if (!u) {
-//     err.classList.remove("d-none");
-//     return;
-//   }
-//   err.classList.add("d-none");
-//   sessionStorage.setItem("ns_user", JSON.stringify(u));
-//   location.href =
-//     new URLSearchParams(location.search).get("return") || "profile";
-// }
+function doLogin() {
+  const email = document.getElementById("Email").value.trim();
+  const pass = document.getElementById("Password").value;
+  // const u = getUsers().find((u) => u.email === email && u.pass === pass);
+  const err = document.getElementById("lErr");
+
+  // if (!u) {
+  //   err.classList.remove("d-none");
+  //   return;
+  // }
+
+  // err.classList.add("d-none");
+
+  // sessionStorage.setItem("ns_user", JSON.stringify(u));
+  // location.href =
+  //   new URLSearchParams(location.search).get("return") || "profile";
+
+  document.getElementById("loginForm").submit();
+}
 
 function doRegister() {
   const name = document.getElementById("Name").value.trim();
@@ -79,7 +84,7 @@ function doRegister() {
 
   if (hasError) return; // ← ถ้ามี error หยุดเลย!
 
-  document.querySelector("form").submit();
+  document.getElementById("registerForm").submit();
 }
 
 function showFieldError(fieldId, message) {

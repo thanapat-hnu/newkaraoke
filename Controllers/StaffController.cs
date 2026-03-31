@@ -4,13 +4,11 @@ using newkaraoke.Models;
 using newkaraoke.Models.db;
 using newkaraoke.ViewModels;
 
-
 namespace newkaraoke.Controllers;
 
 public class StaffController : Controller
 {
     private readonly KaraokeDbContext _db;
-
 
     public StaffController(KaraokeDbContext db)
     {
@@ -21,5 +19,4 @@ public class StaffController : Controller
     {
         return View();
     }
-
 }

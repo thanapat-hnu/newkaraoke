@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace newkaraoke.ViewModels;
 
-public partial class Register
+public partial class Users
 {
     // public int Id { get; set; }
     // [Required(ErrorMessage = "กรุณากรอกชื่อ")]
@@ -27,5 +27,4 @@ public partial class Register
     public DateTime? CreatedAt { get; set; }
 
     public DateTime? UpdatedAt { get; set; }
-
 }
