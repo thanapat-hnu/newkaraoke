@@ -29,17 +29,23 @@
                 </div>
                 <div class="p-4">
 
-                    <form asp-action="RoomCreate" method="post">
+                    <form asp-action="RoomCreate" method="post" enctype="multipart/form-data">
                         @Html.AntiForgeryToken()
 
-                        @if (!ViewData.ModelState.IsValid)
+                        @* @if (!ViewData.ModelState.IsValid)
                         {
                             <div class="alert alert-danger py-2 small mb-3">
                                 @Html.ValidationSummary(false)
                             </div>
-                        }
+                        } *@
 
-                        <div class="row g-3">
+                        <!-- เพิ่มตรงนี้ใต้ PricePerHour -->
+
+                            <div class="row g-3">
+                                <div class="col-12">
+                                <label class="form-label">รูปห้อง</label>
+                                <input type="file" name="Image" class="form-control" accept="image/*" onchange="previewImage(this)">
+                            </div>
 
                             <!-- RoomName ← Room.RoomName -->
                             <div class="col-12">
@@ -132,6 +138,24 @@
         document.getElementById('previewPrice').innerHTML =
             '฿' + (parseFloat(priceInput.value) || 0).toLocaleString() +
             '<span style="font-size:.7rem;font-weight:400;color:var(--ns-ink3);">/ชม.</span>';
+    }
+
+    function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            // ถ้ายังไม่มี img ใน card ให้สร้างขึ้นมา
+            let img = document.getElementById('previewImg');
+            if (!img) {
+                img = document.createElement('img');
+                img.id = 'previewImg';
+                img.style = 'width:100%;height:140px;object-fit:cover;display:block;';
+                document.querySelector('.rm-card').prepend(img);
+            }
+            img.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 
     [nameInput, capInput, priceInput]

@@ -4,6 +4,7 @@ namespace newkaraoke.ViewModels;
 
 public class RoomForm
 {
+    public int Id { get; set; }
     // ── ตรงกับ Room.RoomName ──
     [Required(ErrorMessage = "กรุณากรอกชื่อห้อง")]
     [Display(Name = "ชื่อห้อง")]
@@ -20,4 +21,5 @@ public class RoomForm
     [Range(0, 100000, ErrorMessage = "ราคาต้องไม่ติดลบ")]
     [Display(Name = "ราคา/ชั่วโมง (฿)")]
     public decimal PricePerHour { get; set; }
+    public IFormFile? Image { get; set; }
 }

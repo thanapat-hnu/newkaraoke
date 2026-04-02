@@ -3,21 +3,10 @@
 public class Rooms
 {
     public int Id { get; set; }
-
     public string RoomName { get; set; } = null!;
-
     public int Size { get; set; }
-
     public decimal PricePerHour { get; set; }
-
-    public bool IsConfirmed { get; set; } = false;
-
+    public bool? IsActive { get; set; } = true;
     public int ActiveBookings { get; set; } = 0;
-
-
-    // public DateTime? CreatedAt { get; set; }
-
-    // public DateTime? UpdatedAt { get; set; }
-
-    // public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
+    public string? ImageUrl { get; set; }
 }

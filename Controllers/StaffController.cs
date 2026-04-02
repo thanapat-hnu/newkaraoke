@@ -45,9 +45,11 @@ public class StaffController : Controller
             RoomName = r.RoomName,
             Size = r.Size,
             PricePerHour = r.PricePerHour,
+            IsActive = r.IsActive,
+            ImageUrl = r.ImageUrl,
+            ActiveBookings = r.Bookings.Count(b => b.Status == "confirmed")
         })
-    .ToList();
-
+        .ToList();
         return View(rooms);
     }
 
@@ -58,16 +60,32 @@ public class StaffController : Controller
     }
 
     [HttpPost]
-    public IActionResult RoomCreate(RoomForm form)
+    public async Task<IActionResult> RoomCreate(RoomForm form)
     {
         if (!ModelState.IsValid)
             return View(form);
+
+        string? imagePath = null;
+
+        if (form.Image != null && form.Image.Length > 0)
+        {
+            var fileName = Guid.NewGuid() + Path.GetExtension(form.Image.FileName);
+            var savePath = Path.Combine("wwwroot/images/rooms", fileName);
+            Directory.CreateDirectory("wwwroot/images/rooms");
+
+            using var stream = new FileStream(savePath, FileMode.Create);
+            await form.Image.CopyToAsync(stream);
+
+            imagePath = "/images/rooms/" + fileName;
+        }
 
         var room = new Room
         {
             RoomName = form.RoomName,
             Size = form.Size,
             PricePerHour = form.PricePerHour,
+            ImageUrl = imagePath,
+            CreatedBy = int.Parse(HttpContext.Session.GetString("UserId")!),
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         };

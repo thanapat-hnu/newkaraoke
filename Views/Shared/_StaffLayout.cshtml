@@ -16,7 +16,9 @@
     <div id="sb">
         <div class="sb-logo">
             <div class="sb-name">Neon Star<span class="sb-sup">KARAOKE</span></div>
-            <div class="sb-role-badge role-staff">Staff</div>
+            <div class="sb-role-badge role-@Context.Session.GetString("UserRole")">
+                @Context.Session.GetString("UserRole")
+            </div>
         </div>
 
         <nav class="sb-nav">
@@ -41,10 +43,10 @@
 
         <div class="sb-footer">
             <div class="sb-user">
-                <strong>@User.Identity?.Name</strong><br>
-                <span style="font-size:.65rem;">Staff</span>
+                <strong>@Context.Session.GetString("UserName")</strong><br>
+                <span style="font-size:.65rem;">@Context.Session.GetString("UserRole")</span>
             </div>
-            <form asp-controller="Account" asp-action="Logout" method="post">
+            <form asp-controller="StaffAuth" asp-action="Logout" method="post">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="sb-logout">ออกจากระบบ</button>
             </form>

@@ -38,9 +38,15 @@ public class StaffAuthController : Controller
         return user.Role switch
         {
             "staff" => Redirect("/staff/index"),
-            "it" => Redirect("/it/index"),
-            "ceo" => Redirect("/ceo/index"),
+            "it" => Redirect("/it/logs"),
+            "admin" => Redirect("/ceo/customers"),
             _ => Redirect("/user/index")
         };
+    }
+    [HttpPost]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        return Redirect("/StaffAuth/login");
     }
 }
