@@ -96,6 +96,86 @@ public class StaffController : Controller
         return RedirectToAction("RoomManagement");
     }
 
+    // GET /Staff/RoomEdit/5
+    public IActionResult RoomEdit(int id)
+    {
+        var room = _db.Rooms.Find(id);
+        if (room == null) return NotFound();
+
+        // ส่งข้อมูลเดิมไปให้ View แสดง
+        var form = new RoomForm
+        {
+            RoomName = room.RoomName,
+            Size = room.Size,
+            PricePerHour = room.PricePerHour
+        };
+
+        ViewBag.RoomId = id;
+        ViewBag.CreatedAt = room.CreatedAt?.ToString("dd/MM/yyyy HH:mm");
+        ViewBag.UpdatedAt = room.UpdatedAt?.ToString("dd/MM/yyyy HH:mm");
+
+        return View(form);
+    }
+
+    // POST /Staff/RoomEdit/5
+    [HttpPost]
+    public IActionResult RoomEdit(int id, RoomForm form)
+    {
+        if (!ModelState.IsValid)
+        {
+            ViewBag.RoomId = id;
+            return View(form);
+        }
+
+        var room = _db.Rooms.Find(id);
+        if (room == null) return NotFound();
+
+        room.RoomName = form.RoomName;
+        room.Size = form.Size;
+        room.PricePerHour = form.PricePerHour;
+        room.UpdatedAt = DateTime.Now;
+
+        _db.SaveChanges();
+
+        return RedirectToAction("RoomManagement");
+    }
+
+    [HttpPost]
+    public IActionResult ToggleRoom(int id, string roomAction)
+    {
+        // Console.WriteLine($"id={id}, roomAction={roomAction}");
+
+        var room = _db.Rooms.FirstOrDefault(r => r.Id == id);
+        if (room == null)
+        {
+            return NotFound();
+        }
+        if (roomAction == "enable")
+        {
+            room.IsActive = true;
+        }
+        else
+        {
+            room.IsActive = false;
+        }
+        room.UpdatedAt = DateTime.Now;
+        _db.SaveChanges();
+
+        return RedirectToAction("RoomManagement");
+    }
+    [HttpPost]
+    public IActionResult DeleteRoom(int id)
+    {
+        var room = _db.Rooms.FirstOrDefault(r => r.Id == id);
+        if (room == null)
+        {
+            return NotFound();
+        }
+        _db.Rooms.Remove(room);
+        _db.SaveChanges();
+        return RedirectToAction("RoomManagement");
+    }
+
     public IActionResult Promotions()
     {
         return View();

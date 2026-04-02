@@ -9,4 +9,6 @@ public class Rooms
     public bool? IsActive { get; set; } = true;
     public int ActiveBookings { get; set; } = 0;
     public string? ImageUrl { get; set; }
+    public string? CreatedBy { get; set; }
+    
 }

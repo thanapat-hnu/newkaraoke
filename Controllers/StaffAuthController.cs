@@ -43,6 +43,7 @@ public class StaffAuthController : Controller
             _ => Redirect("/user/index")
         };
     }
+
     [HttpPost]
     public IActionResult Logout()
     {

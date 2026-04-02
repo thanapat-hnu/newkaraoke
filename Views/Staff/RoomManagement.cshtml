@@ -68,10 +68,10 @@
 
                         @if (r.IsActive == true)
                         {
-                            <form asp-action="ToggleRoom" method="post" style="display:inline;">
+                            <form asp-controller="Staff" asp-action="ToggleRoom" method="post" style="display:inline;">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="id" value="@r.Id" />
-                                <input type="hidden" name="action" value="disable" />
+                                <input type="hidden" name="roomAction" value="disable" />
                                 <button type="submit" class="ab"
                                         style="font-size:.62rem;padding:4px 8px;background:rgba(139,96,0,.1);color:var(--ns-amber);border:1px solid rgba(139,96,0,.2);">
                                     ปิดชั่วคราว
@@ -83,14 +83,14 @@
                             <form asp-action="ToggleRoom" method="post" style="display:inline;">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="id" value="@r.Id" />
-                                <input type="hidden" name="action" value="enable" />
+                                <input type="hidden" name="roomAction" value="enable" />
                                 <button type="submit" class="ab success" style="font-size:.62rem;padding:4px 8px;">
                                     เปิดใช้งาน
                                 </button>
                             </form>
                         }
 
-                        <form asp-action="DeleteRoom" method="post" style="display:inline;"
+                        <form asp-controller="Staff" asp-action="DeleteRoom" method="post" style="display:inline;"
                               onsubmit="return confirm('@(r.ActiveBookings > 0 ? "ห้องนี้มีการจอง active อยู่ จะตั้งเป็น รอลบ ยืนยัน?" : "ยืนยันการลบห้อง " + r.RoomName + "?")')">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@r.Id" />
