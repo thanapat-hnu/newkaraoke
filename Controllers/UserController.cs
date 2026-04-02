@@ -99,6 +99,12 @@ public class UserController : Controller
         return RedirectToAction("Index", "User");
     }
 
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        return Redirect("/user/index");
+    }
+
     public IActionResult Booking()
     {
         return View();

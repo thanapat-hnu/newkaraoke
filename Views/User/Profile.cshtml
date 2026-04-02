@@ -1,198 +1,207 @@
 @{
-    Layout = "_ProfileLayout";
+    Layout = "_IndexLayout";
 }
 <div>
-    <!-- Toast -->
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index:900;">
-        <div id="liveToast" class="toast bg-dark text-white border-0" role="alert">
-            <div class="d-flex">
-                <div class="toast-body" id="toastBody"
-                     style="font-family:'Kanit',sans-serif;font-size:.8rem;font-weight:600;"></div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    @{
+        var userId = Context.Session.GetString("UserId");
+        var userName = Context.Session.GetString("UserName");
+    }
+
+    @if (userId == null)
+    {
+        <!-- NOT LOGGED IN -->
+        <div class="d-flex align-items-center justify-content-center" style="min-height:calc(100vh - 56px);">
+            <div class="text-center p-4">
+                <h2 class="font-kanit fw-black mb-2">กรุณาเข้าสู่ระบบ</h2>
+                <p class="text-secondary mb-4">เพื่อดูและจัดการโปรไฟล์ของคุณ</p>
+                <a href="/Auth" class="btn btn-dark px-4">เข้าสู่ระบบ →</a>
             </div>
         </div>
-    </div>
-    <!-- NOT LOGGED IN -->
-    <div id="notLoggedIn" class="d-flex align-items-center justify-content-center"
-         style="min-height:calc(100vh - 56px);position:relative;z-index:1;">
-        <div class="text-center p-4">
-            <h2 class="font-kanit fw-black mb-2">กรุณาเข้าสู่ระบบ</h2>
-            <p class="text-secondary mb-4">เพื่อดูและจัดการโปรไฟล์ของคุณ</p>
-            <a href="Auth" class="btn btn-dark px-4">เข้าสู่ระบบ →</a>
-        </div>
-    </div>
-
-    <!-- APP (shown after login) -->
-    <div id="app" class="container py-5" style="max-width:1000px;display:none !important;position:relative;z-index:1;">
-
-        <!-- PROFILE HERO -->
-        <div class="d-flex align-items-end justify-content-between flex-wrap gap-3 pb-4 mb-4 border-bottom">
-            <div class="d-flex align-items-center gap-3">
-                <div class="avatar" id="avatarLetter">?</div>
-                <div>
-                    <div class="font-kanit fw-black mb-1" id="pName" style="font-size:1.4rem;letter-spacing:-.5px;">—
-                    </div>
-                    <div class="text-secondary small" id="pEmail">—</div>
-                    <div class="text-secondary" style="font-size:.75rem;" id="pJoined">—</div>
+    }
+    else
+    {
+        <!-- Toast -->
+        <div class="position-fixed bottom-0 end-0 p-3" style="z-index:900;">
+            <div id="liveToast" class="toast bg-dark text-white border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body" id="toastBody"
+                         style="font-family:'Kanit',sans-serif;font-size:.8rem;font-weight:600;"></div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
                 </div>
             </div>
-            <button class="btn btn-outline-secondary btn-sm" onclick="toggleEdit()">แก้ไขโปรไฟล์</button>
         </div>
+        <!-- APP (shown after login) -->
+        <div id="app" class="container py-5" style="max-width:1000px;display:block !important;position:relative;z-index:1;">
 
-        <!-- STAT STRIP (Bootstrap row) -->
-        <div class="row g-px mb-4"
-             style="--bs-gutter-x:1px;--bs-gutter-y:1px;background:var(--ns-border);border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
-            <div class="col-6 col-md-3">
-                <div class="ns-stat-card p-3 h-100">
-                    <div class="text-uppercase text-secondary mb-1"
-                         style="font-size:.6rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">
-                        จองทั้งหมด</div>
-                        <div class="stat-val" id="statTotal">0</div>
-                        <div class="text-secondary" style="font-size:.7rem;">ครั้ง</div>
+            <!-- PROFILE HERO -->
+            <div class="d-flex align-items-end justify-content-between flex-wrap gap-3 pb-4 mb-4 border-bottom">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="avatar" id="avatarLetter">?</div>
+                    <div>
+                        <div class="font-kanit fw-black mb-1" id="pName" style="font-size:1.4rem;letter-spacing:-.5px;">—
+                        </div>
+                        <div class="text-secondary small" id="pEmail">—</div>
+                        <div class="text-secondary" style="font-size:.75rem;" id="pJoined">—</div>
                     </div>
                 </div>
+                <button class="btn btn-outline-secondary btn-sm" onclick="toggleEdit()">แก้ไขโปรไฟล์</button>
+            </div>
+
+            <!-- STAT STRIP (Bootstrap row) -->
+            <div class="row g-px mb-4"
+                 style="--bs-gutter-x:1px;--bs-gutter-y:1px;background:var(--ns-border);border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
                 <div class="col-6 col-md-3">
                     <div class="ns-stat-card p-3 h-100">
                         <div class="text-uppercase text-secondary mb-1"
                              style="font-size:.6rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">
-                            ชั่วโมงรวม</div>
-                            <div class="stat-val" id="statHours">0</div>
-                            <div class="text-secondary" style="font-size:.7rem;">ชั่วโมง</div>
+                            จองทั้งหมด</div>
+                            <div class="stat-val" id="statTotal">0</div>
+                            <div class="text-secondary" style="font-size:.7rem;">ครั้ง</div>
                         </div>
                     </div>
                     <div class="col-6 col-md-3">
                         <div class="ns-stat-card p-3 h-100">
                             <div class="text-uppercase text-secondary mb-1"
                                  style="font-size:.6rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">
-                                ยอดใช้จ่าย</div>
-                                <div class="stat-val" id="statSpend">฿0</div>
-                                <div class="text-secondary" style="font-size:.7rem;">บาท</div>
+                                ชั่วโมงรวม</div>
+                                <div class="stat-val" id="statHours">0</div>
+                                <div class="text-secondary" style="font-size:.7rem;">ชั่วโมง</div>
                             </div>
                         </div>
                         <div class="col-6 col-md-3">
                             <div class="ns-stat-card p-3 h-100">
                                 <div class="text-uppercase text-secondary mb-1"
-                                     style="font-size:.6rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">6
-                                    เดือนล่าสุด</div>
-                                    <div class="activity-bar mt-1 mb-1" id="actBar"></div>
-                                    <div id="actLbl" style="display:flex;gap:3px;"></div>
+                                     style="font-size:.6rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">
+                                    ยอดใช้จ่าย</div>
+                                    <div class="stat-val" id="statSpend">฿0</div>
+                                    <div class="text-secondary" style="font-size:.7rem;">บาท</div>
                                 </div>
                             </div>
-                        </div>
+                            <div class="col-6 col-md-3">
+                                <div class="ns-stat-card p-3 h-100">
+                                    <div class="text-uppercase text-secondary mb-1"
+                                         style="font-size:.6rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">6
+                                        เดือนล่าสุด</div>
+                                        <div class="activity-bar mt-1 mb-1" id="actBar"></div>
+                                        <div id="actLbl" style="display:flex;gap:3px;"></div>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <!-- TABS (Bootstrap nav-tabs) -->
-                        <ul class="nav profile-tabs mb-4" id="profileTab" role="tablist">
-                            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabHistory"
-                                                             onclick="renderHistory('')">ประวัติการจอง</button></li>
-                                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabFavs"
-                                                                 onclick="renderFavs()">ห้องโปรด</button></li>
-                                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab"
-                                                                     data-bs-target="#tabSettings">ตั้งค่าบัญชี</button></li>
-                                    </ul>
+                            <!-- TABS (Bootstrap nav-tabs) -->
+                            <ul class="nav profile-tabs mb-4" id="profileTab" role="tablist">
+                                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tabHistory"
+                                                                 onclick="renderHistory('')">ประวัติการจอง</button></li>
+                                    <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabFavs"
+                                                                     onclick="renderFavs()">ห้องโปรด</button></li>
+                                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab"
+                                                                         data-bs-target="#tabSettings">ตั้งค่าบัญชี</button></li>
+                                        </ul>
 
-                                    <div class="tab-content">
+                                        <div class="tab-content">
 
-                                        <!-- TAB: HISTORY -->
-                                        <div class="tab-pane fade show active" id="tabHistory">
-                                            <!-- Filter (Bootstrap select) -->
-                                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                                <select class="form-select form-select-sm w-auto" onchange="renderHistory(this.value)">
-                                                    <option value="">ทั้งหมด</option>
-                                                    <option value="confirmed">ยืนยันแล้ว</option>
-                                                    <option value="pending">รอดำเนินการ</option>
-                                                </select>
-                                                <span class="text-secondary small" id="histCount">0 รายการ</span>
+                                            <!-- TAB: HISTORY -->
+                                            <div class="tab-pane fade show active" id="tabHistory">
+                                                <!-- Filter (Bootstrap select) -->
+                                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                                    <select class="form-select form-select-sm w-auto" onchange="renderHistory(this.value)">
+                                                        <option value="">ทั้งหมด</option>
+                                                        <option value="confirmed">ยืนยันแล้ว</option>
+                                                        <option value="pending">รอดำเนินการ</option>
+                                                    </select>
+                                                    <span class="text-secondary small" id="histCount">0 รายการ</span>
+                                                </div>
+                                                <div id="bkList"></div>
                                             </div>
-                                            <div id="bkList"></div>
-                                        </div>
 
-                                        <!-- TAB: FAVS -->
-                                        <div class="tab-pane fade" id="tabFavs">
-                                            <div id="favGrid" class="row g-px"
-                                                 style="--bs-gutter-x:1px;--bs-gutter-y:1px;background:var(--ns-border);border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
+                                            <!-- TAB: FAVS -->
+                                            <div class="tab-pane fade" id="tabFavs">
+                                                <div id="favGrid" class="row g-px"
+                                                     style="--bs-gutter-x:1px;--bs-gutter-y:1px;background:var(--ns-border);border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <!-- TAB: SETTINGS -->
-                                        <div class="tab-pane fade" id="tabSettings">
+                                            <!-- TAB: SETTINGS -->
+                                            <div class="tab-pane fade" id="tabSettings">
 
-                                            <!-- Info Card (Bootstrap card) -->
-                                            <div class="card mb-3">
-                                                <div class="card-body">
-                                                    <div class="text-uppercase text-secondary mb-3"
-                                                         style="font-size:.7rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">
-                                                        ข้อมูลส่วนตัว</div>
+                                                <!-- Info Card (Bootstrap card) -->
+                                                <div class="card mb-3">
+                                                    <div class="card-body">
+                                                        <div class="text-uppercase text-secondary mb-3"
+                                                             style="font-size:.7rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">
+                                                            ข้อมูลส่วนตัว</div>
 
-                                                        <!-- View mode -->
-                                                        <div id="viewMode">
-                                                            <div class="vstack gap-0 mb-3">
-                                                                <div class="info-row d-flex justify-content-between py-2"><span
-                                                                    class="info-l">ชื่อ-นามสกุล</span><span id="vName">—</span></div>
+                                                            <!-- View mode -->
+                                                            <div id="viewMode">
+                                                                <div class="vstack gap-0 mb-3">
                                                                     <div class="info-row d-flex justify-content-between py-2"><span
-                                                                        class="info-l">อีเมล</span><span id="vEmail">—</span></div>
+                                                                        class="info-l">ชื่อ-นามสกุล</span><span id="vName">—</span></div>
                                                                         <div class="info-row d-flex justify-content-between py-2"><span
-                                                                            class="info-l">เบอร์โทร</span><span id="vPhone">—</span></div>
-                                                                            <div class="info-row d-flex justify-content-between py-2 border-0"><span
-                                                                                class="info-l">วันเกิด</span><span id="vBirthday">—</span></div>
-                                                                            </div>
-                                                                            <button class="btn btn-outline-secondary btn-sm" onclick="toggleEdit()">แก้ไข</button>
-                                                                        </div>
-
-                                                                        <!-- Edit mode (Bootstrap Collapse) -->
-                                                                        <div class="collapse" id="editCollapse">
-                                                                            <div class="row g-2 mb-3 mt-1">
-                                                                                <div class="col-md-6"><label class="form-label">ชื่อ-นามสกุล</label><input type="text"
-                                                                                                                                                               class="form-control" id="eName"></div>
-                                                                                    <div class="col-md-6"><label class="form-label">อีเมล</label><input type="email"
-                                                                                                                                                            class="form-control" id="eEmail"></div>
-                                                                                        <div class="col-md-6"><label class="form-label">เบอร์โทรศัพท์</label><input type="tel"
-                                                                                                                                                                        class="form-control" id="ePhone"></div>
-                                                                                            <div class="col-md-6"><label class="form-label">วันเกิด</label><input type="date"
-                                                                                                                                                                      class="form-control" id="eBirthday"></div>
-                                                                                            </div>
-                                                                                            <div class="d-flex gap-2">
-                                                                                                <button class="btn btn-dark btn-sm" onclick="saveProfile()">บันทึก</button>
-                                                                                                <button class="btn btn-outline-secondary btn-sm" onclick="toggleEdit()">ยกเลิก</button>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
+                                                                            class="info-l">อีเมล</span><span id="vEmail">—</span></div>
+                                                                            <div class="info-row d-flex justify-content-between py-2"><span
+                                                                                class="info-l">เบอร์โทร</span><span id="vPhone">—</span></div>
+                                                                                <div class="info-row d-flex justify-content-between py-2 border-0"><span
+                                                                                    class="info-l">วันเกิด</span><span id="vBirthday">—</span></div>
                                                                                 </div>
+                                                                                <button class="btn btn-outline-secondary btn-sm" onclick="toggleEdit()">แก้ไข</button>
+                                                                            </div>
 
-                                                                                <!-- Change Password -->
-                                                                                <div class="card mb-3">
-                                                                                    <div class="card-body">
-                                                                                        <div class="text-uppercase text-secondary mb-3"
-                                                                                             style="font-size:.7rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">
-                                                                                            เปลี่ยนรหัสผ่าน</div>
-                                                                                            <div class="row g-2 mb-2">
-                                                                                                <div class="col-md-6"><label class="form-label">รหัสผ่านปัจจุบัน</label><input
-                                                                                                    type="password" class="form-control" id="curPass"></div>
-                                                                                                    <div class="col-md-6"><label class="form-label">รหัสผ่านใหม่ (≥6 ตัว)</label><input
-                                                                                                        type="password" class="form-control" id="newPass"></div>
-                                                                                                    </div>
-                                                                                                    <div id="passMsg" class="small mb-2"></div>
-                                                                                                    <button class="btn btn-dark btn-sm" onclick="changePassword()">เปลี่ยนรหัสผ่าน</button>
+                                                                            <!-- Edit mode (Bootstrap Collapse) -->
+                                                                            <div class="collapse" id="editCollapse">
+                                                                                <div class="row g-2 mb-3 mt-1">
+                                                                                    <div class="col-md-6"><label class="form-label">ชื่อ-นามสกุล</label><input type="text"
+                                                                                                                                                                   class="form-control" id="eName"></div>
+                                                                                        <div class="col-md-6"><label class="form-label">อีเมล</label><input type="email"
+                                                                                                                                                                class="form-control" id="eEmail"></div>
+                                                                                            <div class="col-md-6"><label class="form-label">เบอร์โทรศัพท์</label><input type="tel"
+                                                                                                                                                                            class="form-control" id="ePhone"></div>
+                                                                                                <div class="col-md-6"><label class="form-label">วันเกิด</label><input type="date"
+                                                                                                                                                                          class="form-control" id="eBirthday"></div>
                                                                                                 </div>
-                                                                                            </div>
-
-                                                                                            <!-- Danger Zone -->
-                                                                                            <div class="card" style="border-color:rgba(176,48,48,.2);">
-                                                                                                <div class="card-body">
-                                                                                                    <div class="text-uppercase mb-2"
-                                                                                                         style="font-size:.7rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;color:#b03030;">
-                                                                                                        Danger Zone</div>
-                                                                                                        <p class="text-secondary small mb-3">การลบบัญชีจะลบข้อมูลทั้งหมดถาวร ไม่สามารถกู้คืนได้</p>
-                                                                                                        <div class="col-md-5 mb-3">
-                                                                                                            <label class="form-label">พิมพ์อีเมลเพื่อยืนยัน</label>
-                                                                                                            <input type="email" class="form-control" id="deleteConfirm">
-                                                                                                        </div>
-                                                                                                        <button class="btn btn-sm"
-                                                                                                                style="background:#b03030;color:#fff;font-family:'Kanit',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;"
-                                                                                                                onclick="deleteAccount()">ลบบัญชี</button>
-                                                                                                    </div>
+                                                                                                <div class="d-flex gap-2">
+                                                                                                    <button class="btn btn-dark btn-sm" onclick="saveProfile()">บันทึก</button>
+                                                                                                    <button class="btn btn-outline-secondary btn-sm" onclick="toggleEdit()">ยกเลิก</button>
                                                                                                 </div>
-
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
+
+                                                                                    <!-- Change Password -->
+                                                                                    <div class="card mb-3">
+                                                                                        <div class="card-body">
+                                                                                            <div class="text-uppercase text-secondary mb-3"
+                                                                                                 style="font-size:.7rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">
+                                                                                                เปลี่ยนรหัสผ่าน</div>
+                                                                                                <div class="row g-2 mb-2">
+                                                                                                    <div class="col-md-6"><label class="form-label">รหัสผ่านปัจจุบัน</label><input
+                                                                                                        type="password" class="form-control" id="curPass"></div>
+                                                                                                        <div class="col-md-6"><label class="form-label">รหัสผ่านใหม่ (≥6 ตัว)</label><input
+                                                                                                            type="password" class="form-control" id="newPass"></div>
+                                                                                                        </div>
+                                                                                                        <div id="passMsg" class="small mb-2"></div>
+                                                                                                        <button class="btn btn-dark btn-sm" onclick="changePassword()">เปลี่ยนรหัสผ่าน</button>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                                <!-- Danger Zone -->
+                                                                                                <div class="card" style="border-color:rgba(176,48,48,.2);">
+                                                                                                    <div class="card-body">
+                                                                                                        <div class="text-uppercase mb-2"
+                                                                                                             style="font-size:.7rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;color:#b03030;">
+                                                                                                            Danger Zone</div>
+                                                                                                            <p class="text-secondary small mb-3">การลบบัญชีจะลบข้อมูลทั้งหมดถาวร ไม่สามารถกู้คืนได้</p>
+                                                                                                            <div class="col-md-5 mb-3">
+                                                                                                                <label class="form-label">พิมพ์อีเมลเพื่อยืนยัน</label>
+                                                                                                                <input type="email" class="form-control" id="deleteConfirm">
+                                                                                                            </div>
+                                                                                                            <button class="btn btn-sm"
+                                                                                                                    style="background:#b03030;color:#fff;font-family:'Kanit',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;"
+                                                                                                                    onclick="deleteAccount()">ลบบัญชี</button>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    }
                                                                                 </div>

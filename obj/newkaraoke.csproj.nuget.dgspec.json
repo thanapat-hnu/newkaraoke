@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bigku\\Desktop\\newkaraoke\\newkaraoke\\newkaraoke.csproj": {}
+    "C:\\Users\\acer\\Documents\\newkaraoke\\newkaraoke.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bigku\\Desktop\\newkaraoke\\newkaraoke\\newkaraoke.csproj": {
+    "C:\\Users\\acer\\Documents\\newkaraoke\\newkaraoke.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bigku\\Desktop\\newkaraoke\\newkaraoke\\newkaraoke.csproj",
+        "projectUniqueName": "C:\\Users\\acer\\Documents\\newkaraoke\\newkaraoke.csproj",
         "projectName": "newkaraoke",
-        "projectPath": "C:\\Users\\bigku\\Desktop\\newkaraoke\\newkaraoke\\newkaraoke.csproj",
-        "packagesPath": "C:\\Users\\bigku\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bigku\\Desktop\\newkaraoke\\newkaraoke\\obj\\",
+        "projectPath": "C:\\Users\\acer\\Documents\\newkaraoke\\newkaraoke.csproj",
+        "packagesPath": "C:\\Users\\acer\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\acer\\Documents\\newkaraoke\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\bigku\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\acer\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
