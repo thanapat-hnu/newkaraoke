@@ -1,0 +1,140 @@
+@* Views/Staff/RoomCreate.cshtml — เพิ่มห้องใหม่
+   ตรงกับ Room model: RoomName, Size, PricePerHour
+*@
+@model newkaraoke.ViewModels.RoomForm
+@{
+    Layout = "_StaffLayout";
+    ViewBag.Title = "เพิ่มห้องใหม่";
+    ViewBag.ActiveNav = "rooms";
+}
+
+<div class="p-4" style="position:relative;z-index:1;">
+
+    <div class="d-flex align-items-center gap-2 mb-1">
+        <a asp-action="RoomManagement"
+           style="font-size:.78rem;color:var(--ns-ink3);text-decoration:none;">
+            ← จัดการห้อง
+        </a>
+    </div>
+    <div class="pg-ttl">เพิ่มห้องใหม่</div>
+    <p class="pg-sub mb-4">กรอกข้อมูลห้องคาราโอเกะที่ต้องการเพิ่ม</p>
+
+    <div class="row">
+
+        <!-- FORM -->
+        <div class="col-lg-7">
+            <div class="tc">
+                <div class="th">
+                    <div class="th-ttl">ข้อมูลห้อง</div>
+                </div>
+                <div class="p-4">
+
+                    <form asp-action="RoomCreate" method="post">
+                        @Html.AntiForgeryToken()
+
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger py-2 small mb-3">
+                                @Html.ValidationSummary(false)
+                            </div>
+                        }
+
+                        <div class="row g-3">
+
+                            <!-- RoomName ← Room.RoomName -->
+                            <div class="col-12">
+                                <label asp-for="RoomName" class="form-label">
+                                    ชื่อห้อง <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <input asp-for="RoomName"
+                                       class="form-control"
+                                       placeholder="เช่น Galaxy S, Neon M">
+                                <span asp-validation-for="RoomName" class="text-danger small"></span>
+                            </div>
+
+                            <!-- Size ← Room.Size -->
+                            <div class="col-md-6">
+                                <label asp-for="Size" class="form-label">
+                                    ความจุสูงสุด (คน) <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <input asp-for="Size"
+                                       class="form-control"
+                                       type="number"
+                                       min="1" max="50"
+                                       placeholder="8">
+                                <span asp-validation-for="Size" class="text-danger small"></span>
+                            </div>
+
+                            <!-- PricePerHour ← Room.PricePerHour -->
+                            <div class="col-md-6">
+                                <label asp-for="PricePerHour" class="form-label">
+                                    ราคา/ชั่วโมง (฿) <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <input asp-for="PricePerHour"
+                                       class="form-control"
+                                       type="number"
+                                       min="0"
+                                       placeholder="590">
+                                <span asp-validation-for="PricePerHour" class="text-danger small"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-dark px-4">บันทึกห้อง</button>
+                            <a asp-action="RoomManagement"
+                               class="btn btn-outline-secondary px-4">ยกเลิก</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- PREVIEW -->
+        <div class="col-lg-5">
+            <div class="th-ttl mb-3">ตัวอย่าง Card</div>
+            <div style="border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
+                <div class="rm-card">
+                    <div class="rm-card-top">
+                        <div class="rm-emoji">🎤</div>
+                        <span class="rm-status-badge rm-st-active">เปิดอยู่</span>
+                    </div>
+                    <div class="rm-name" id="previewName">ชื่อห้อง</div>
+                    <div class="rm-meta" id="previewMeta">≤0 คน</div>
+                    <div class="rm-price" id="previewPrice">
+                        ฿0<span style="font-size:.7rem;font-weight:400;color:var(--ns-ink3);">/ชม.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="notice info mt-3" style="font-size:.75rem;">
+                <strong>หมายเหตุ</strong><br>
+                ถ้าต้องการเพิ่ม field อื่น เช่น Emoji, ประเภทห้อง, คำอธิบาย
+                ให้เพิ่ม column ใน DB ก่อน แล้วทำ migration ครับ
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    const nameInput  = document.querySelector('[name="RoomName"]');
+    const capInput   = document.querySelector('[name="Size"]');
+    const priceInput = document.querySelector('[name="PricePerHour"]');
+
+    function updatePreview() {
+        document.getElementById('previewName').textContent =
+            nameInput.value || 'ชื่อห้อง';
+        document.getElementById('previewMeta').textContent =
+            '≤' + (capInput.value || '0') + ' คน';
+        document.getElementById('previewPrice').innerHTML =
+            '฿' + (parseFloat(priceInput.value) || 0).toLocaleString() +
+            '<span style="font-size:.7rem;font-weight:400;color:var(--ns-ink3);">/ชม.</span>';
+    }
+
+    [nameInput, capInput, priceInput]
+        .forEach(el => el?.addEventListener('input', updatePreview));
+</script>
+}

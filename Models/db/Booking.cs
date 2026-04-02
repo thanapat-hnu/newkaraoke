@@ -29,6 +29,8 @@ public partial class Booking
 
     public DateTime? UpdatedAt { get; set; }
 
+    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+
     public virtual Promotion? Promotion { get; set; }
 
     public virtual Room Room { get; set; } = null!;

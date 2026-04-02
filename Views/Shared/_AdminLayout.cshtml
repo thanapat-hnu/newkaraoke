@@ -1,10 +1,10 @@
-﻿@* Views/Shared/_StaffLayout.cshtml *@
+@* Views/Shared/_AdminLayout.cshtml *@
 <!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title — Neon Star Staff</title>
+    <title>@ViewBag.Title — Neon Star Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;900&family=Sarabun:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/admin-shared.css" />
@@ -12,37 +12,40 @@
 </head>
 <body class="d-flex">
 
-    <!-- SIDEBAR -->
     <div id="sb">
         <div class="sb-logo">
             <div class="sb-name">Neon Star<span class="sb-sup">KARAOKE</span></div>
-            <div class="sb-role-badge role-staff">Staff</div>
+            <div class="sb-role-badge role-admin">Admin</div>
         </div>
 
         <nav class="sb-nav">
-            <div class="sb-sec">Operations</div>
-            <a class="sb-item @(ViewBag.ActiveNav == "dashboard"  ? "active" : "")"
-               asp-controller="Staff" asp-action="Index">
+            <div class="sb-sec">Analytics</div>
+            <a class="sb-item @(ViewBag.ActiveNav == "dashboard" ? "active" : "")"
+               asp-controller="Admin" asp-action="Index">
                 <span class="sb-icon">◈</span> Dashboard
             </a>
-            <a class="sb-item @(ViewBag.ActiveNav == "bookings"   ? "active" : "")"
-               asp-controller="Staff" asp-action="Bookings">
-                <span class="sb-icon">◻</span> การจอง
+            <a class="sb-item @(ViewBag.ActiveNav == "revenue"   ? "active" : "")"
+               asp-controller="Admin" asp-action="Revenue">
+                <span class="sb-icon">◎</span> รายรับ
             </a>
-            <a class="sb-item @(ViewBag.ActiveNav == "rooms"      ? "active" : "")"
-               asp-controller="Staff" asp-action="RoomManagement">
-                <span class="sb-icon">⊞</span> จัดการห้อง
+            <a class="sb-item @(ViewBag.ActiveNav == "rooms"     ? "active" : "")"
+               asp-controller="Admin" asp-action="Rooms">
+                <span class="sb-icon">◫</span> ห้อง
             </a>
-            <a class="sb-item @(ViewBag.ActiveNav == "promotions" ? "active" : "")"
-               asp-controller="Staff" asp-action="Promotions">
-                <span class="sb-icon">✦</span> โปรโมชั่น
+            <a class="sb-item @(ViewBag.ActiveNav == "heatmap"   ? "active" : "")"
+               asp-controller="Admin" asp-action="Heatmap">
+                <span class="sb-icon">▦</span> Heatmap
+            </a>
+            <a class="sb-item @(ViewBag.ActiveNav == "customers" ? "active" : "")"
+               asp-controller="Admin" asp-action="Customers">
+                <span class="sb-icon">◷</span> ลูกค้า
             </a>
         </nav>
 
         <div class="sb-footer">
             <div class="sb-user">
                 <strong>@User.Identity?.Name</strong><br>
-                <span style="font-size:.65rem;">Staff</span>
+                <span style="font-size:.65rem;">Administrator</span>
             </div>
             <form asp-controller="Account" asp-action="Logout" method="post">
                 @Html.AntiForgeryToken()
@@ -51,23 +54,31 @@
         </div>
     </div>
 
-    <!-- MAIN -->
     <div id="main" class="flex-grow-1 overflow-x-hidden">
-
-        <!-- TOPBAR -->
         <div class="topbar d-flex align-items-center justify-content-between px-3">
             <div class="topbar-title">@ViewBag.Title</div>
+            @* Date range filter — Admin ใช้บ่อยจึงใส่ใน layout *@
             <div class="d-flex align-items-center gap-2">
-                <a href="/" class="tl" style="font-size:.75rem;color:var(--ns-ink3);text-decoration:none;">หน้าลูกค้า ↗</a>
+                <div class="d-flex gap-1" id="drWrap">
+                    <a asp-controller="Admin" asp-action="@ViewBag.CurrentAction"
+                       asp-route-range="7"
+                       class="dr-btn @(ViewBag.Range == 7   ? "active" : "")">7 วัน</a>
+                    <a asp-controller="Admin" asp-action="@ViewBag.CurrentAction"
+                       asp-route-range="30"
+                       class="dr-btn @(ViewBag.Range == 30  ? "active" : "")">30 วัน</a>
+                    <a asp-controller="Admin" asp-action="@ViewBag.CurrentAction"
+                       asp-route-range="90"
+                       class="dr-btn @(ViewBag.Range == 90  ? "active" : "")">90 วัน</a>
+                    <a asp-controller="Admin" asp-action="@ViewBag.CurrentAction"
+                       asp-route-range="0"
+                       class="dr-btn @(ViewBag.Range == 0   ? "active" : "")">ทั้งหมด</a>
+                </div>
+                <a href="/" style="font-size:.75rem;color:var(--ns-ink3);text-decoration:none;padding:3px 7px;">หน้าลูกค้า ↗</a>
             </div>
         </div>
-
-        @* เนื้อหาของแต่ละหน้า *@
         @RenderBody()
-
     </div>
 
-    <!-- Toast -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
         <div id="liveToast" class="toast text-white border-0" role="alert">
             <div class="d-flex">
@@ -81,15 +92,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-
-    @* helper toast function ใช้ได้ทุกหน้า *@
     <script>
         function showToast(msg) {
             document.getElementById('toastMsg').textContent = msg;
             new bootstrap.Toast(document.getElementById('liveToast'), { delay: 3000 }).show();
         }
     </script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

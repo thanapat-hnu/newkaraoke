@@ -1,0 +1,227 @@
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Star — Staff Login</title>
+    <link
+    href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;900&family=Sarabun:wght@300;400;500&display=swap"
+    rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+            :root {
+                --ns-bg: #F2F0EB;
+                --ns-bg2: #E9E7E1;
+                --ns-bg3: #DEDAD2;
+                --ns-sf: #ECEAE4;
+                --ns-ink: #1C1C1A;
+                --ns-ink2: #3A3A36;
+                --ns-ink3: #6B6B65;
+                --ns-border: rgba(28, 28, 26, .10);
+                --ns-border-md: rgba(28, 28, 26, .18);
+                --ns-red: #b03030;
+            }
+
+            body {
+                background: var(--ns-ink);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Sarabun', sans-serif;
+            }
+
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                background-image: radial-gradient(circle, rgba(242, 240, 235, .04) 1px, transparent 1px);
+                background-size: 28px 28px;
+            }
+
+            .login-wrap {
+                width: 100%;
+                max-width: 380px;
+                padding: 1rem;
+                position: relative;
+                z-index: 1;
+            }
+
+            .login-logo {
+                text-align: center;
+                margin-bottom: 2rem;
+            }
+
+            .login-logo-name {
+                font-family: 'Kanit', sans-serif;
+                font-weight: 900;
+                font-size: 1.1rem;
+                letter-spacing: 4px;
+                text-transform: uppercase;
+                color: var(--ns-bg);
+            }
+
+            .login-logo-sup {
+                font-size: .45rem;
+                letter-spacing: 1px;
+                color: rgba(242, 240, 235, .3);
+                font-weight: 400;
+                display: block;
+                margin-top: 2px;
+            }
+
+            .login-badge {
+                display: inline-block;
+                margin-top: .5rem;
+                padding: 2px 10px;
+                border-radius: 2px;
+                font-family: 'Kanit', sans-serif;
+                font-size: .58rem;
+                font-weight: 700;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                background: rgba(0, 180, 100, .2);
+                color: #80ffb0;
+            }
+
+            .login-card {
+                background: var(--ns-bg);
+                border-radius: 4px;
+                padding: 2rem;
+            }
+
+            .login-title {
+                font-family: 'Kanit', sans-serif;
+                font-size: 1.1rem;
+                font-weight: 900;
+                letter-spacing: -.5px;
+                margin-bottom: .25rem;
+                color: var(--ns-ink);
+            }
+
+            .login-sub {
+                font-size: .78rem;
+                color: var(--ns-ink3);
+                margin-bottom: 1.5rem;
+            }
+
+            .form-label {
+                font-size: .62rem;
+                color: var(--ns-ink3);
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+
+            .form-control {
+                background: var(--ns-bg2) !important;
+                border-color: var(--ns-border-md) !important;
+                color: var(--ns-ink) !important;
+                font-family: 'Sarabun', sans-serif;
+                font-size: .9rem;
+                border-radius: 3px !important;
+            }
+
+            .form-control:focus {
+                border-color: var(--ns-ink) !important;
+                box-shadow: none !important;
+            }
+
+            .btn-login {
+                background: var(--ns-ink);
+                border: none;
+                border-radius: 3px;
+                color: var(--ns-bg);
+                font-family: 'Kanit', sans-serif;
+                font-weight: 700;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                font-size: .75rem;
+                padding: .65rem;
+                width: 100%;
+                cursor: pointer;
+                transition: opacity .2s;
+            }
+
+            .btn-login:hover {
+                opacity: .75;
+            }
+
+            .error-msg {
+                background: rgba(176, 48, 48, .08);
+                border: 1px solid rgba(176, 48, 48, .2);
+                border-radius: 3px;
+                color: var(--ns-red);
+                font-size: .78rem;
+                padding: .6rem .9rem;
+                margin-bottom: 1rem;
+            }
+
+            .back-link {
+                display: block;
+                text-align: center;
+                margin-top: 1.25rem;
+                font-size: .72rem;
+                color: rgba(242, 240, 235, .25);
+                text-decoration: none;
+                letter-spacing: 1px;
+                transition: color .2s;
+            }
+
+            .back-link:hover {
+                color: rgba(242, 240, 235, .5);
+            }
+    </style>
+</head>
+
+<body>
+    <div class="login-wrap">
+
+        <!-- Logo -->
+        <div class="login-logo">
+            <div class="login-logo-name">
+                Neon Star
+                <span class="login-logo-sup">KARAOKE</span>
+            </div>
+            <div class="login-badge">Staff Portal</div>
+        </div>
+
+        <!-- Card -->
+        <div class="login-card">
+            <div class="login-title">เข้าสู่ระบบ</div>
+            <div class="login-sub">สำหรับพนักงาน / IT / CEO เท่านั้น</div>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="error-msg">อีเมลหรือรหัสผ่านไม่ถูกต้อง</div>
+            }
+            
+            <form method="post" action="/StaffAuth/Login">
+                <div class="mb-3">
+                    <label class="form-label">อีเมล</label>
+                    <input type="email" name="Email" class="form-control" placeholder="staff@neonstar.com" required
+                           autofocus>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label">รหัสผ่าน</label>
+                    <input type="password" name="Password" class="form-control" placeholder="••••••••" value="123456"
+                           required>
+                </div>
+                <button type="submit" class="btn-login">เข้าสู่ระบบ →</button>
+            </form>
+        </div>
+
+        <a href="/user/index" class="back-link">← กลับหน้าลูกค้า</a>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

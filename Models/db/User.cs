@@ -11,11 +11,12 @@ public partial class User
 
     public string Email { get; set; } = null!;
 
+    /// <summary>
+    /// bcrypt hash only — never plain text
+    /// </summary>
     public string Password { get; set; } = null!;
 
     public string Role { get; set; } = null!;
-
-    public string? ProfileImg { get; set; }
 
     public string? Phone { get; set; }
 
@@ -26,4 +27,10 @@ public partial class User
     public virtual ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 
     public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
+
+    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+
+    public virtual ICollection<Promotion> Promotions { get; set; } = new List<Promotion>();
+
+    public virtual ICollection<Room> Rooms { get; set; } = new List<Room>();
 }

@@ -1,0 +1,184 @@
+@model IEnumerable<newkaraoke.ViewModels.Rooms>;
+
+@{
+    Layout = "_StaffLayout";
+}
+
+@* Views/Staff/RoomManagement.cshtml — จัดการห้อง
+   Model: RoomManagementViewModel
+     .Rooms — List<RoomManageDto>
+       .Id, .Name, .Emoji, .Type, .Cap, .Price
+       .Status ("active" | "disabled" | "pending-delete")
+       .Desc, .ActiveBookings
+*@
+
+@* @{
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+    ViewBag.Title = "จัดการห้อง";
+    ViewBag.ActiveNav = "rooms";
+} *@
+
+<div class="p-4" style="position:relative;z-index:1;">
+
+    <div class="pg-ttl">จัดการห้อง</div>
+    <p class="pg-sub mb-3">เพิ่ม แก้ไข และปิด/เปิดการใช้งานห้องคาราโอเกะ</p>
+
+    <div class="notice info mb-3">
+        ห้องที่มีการจองอยู่ไม่สามารถลบได้ — จะถูกตั้งเป็น "รอลบ" และลบอัตโนมัติเมื่อไม่มีการจองที่ active
+    </div>
+
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="th-ttl">ห้องทั้งหมด (@Model.Count() ห้อง)</div>
+        <a asp-action="RoomCreate" class="ab" style="text-decoration:none;">+ เพิ่มห้อง</a>
+    </div>
+
+    @* Room Cards Grid *@
+    <div class="row g-px mb-3"
+         style="--bs-gutter-x:1px;--bs-gutter-y:1px;background:var(--ns-border);border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
+        @foreach (var r in Model)
+        {
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="rm-card h-100 @(r.IsConfirmed != true ? "disabled-room" : "")">
+
+                    <div class="rm-card-top">
+                        @* <div class="rm-emoji">@r.Emoji</div> *@
+                        @if (r.IsConfirmed == true)
+                        {
+                            <span class="rm-status-badge rm-st-active">เปิดอยู่</span>
+                        }
+                        else if (r.IsConfirmed == false)
+                        {
+                            <span class="rm-status-badge rm-st-disabled">ปิดชั่วคราว</span>
+                        }
+                        else
+                        {
+                            <span class="rm-status-badge rm-st-pending">รอลบ</span>
+                        }
+                    </div>
+
+                    <div class="rm-name">@r.RoomName</div>
+                    @* <div class="rm-meta">@r.Type · ≤@r.Cap คน<br>@r.Desc</div> *@
+                    <div class="rm-price">
+                        ฿@r.PricePerHour.ToString("N0")<span
+                        style="font-size:.7rem;font-weight:400;color:var(--ns-ink3);">/ชม.</span>
+                    </div>
+
+                    @if (r.ActiveBookings > 0)
+                    {
+                        <div style="font-size:.7rem;color:var(--ns-amber);margin-top:.25rem;">
+                            📅 จองอยู่ @r.ActiveBookings รายการ
+                        </div>
+                    }
+
+                    <div class="rm-actions">
+                        @* แก้ไข *@
+                        <a asp-action="RoomEdit" asp-route-id="@r.Id" class="ab sm"
+                               style="font-size:.62rem;padding:4px 8px;text-decoration:none;">
+                            แก้ไข
+                        </a>
+
+                        @* ปิดชั่วคราว — เฉพาะ active *@
+                        @if (r.IsConfirmed == true)
+                        {
+                            <form asp-action="ToggleRoom" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@r.Id" />
+                                <input type="hidden" name="action" value="disable" />
+                                <button type="submit" class="ab"
+                                        style="font-size:.62rem;padding:4px 8px;background:rgba(139,96,0,.1);color:var(--ns-amber);border:1px solid rgba(139,96,0,.2);">
+                                    ปิดชั่วคราว
+                                </button>
+                            </form>
+                        }
+
+                        @* เปิดใช้งาน — เฉพาะ disabled *@
+                        @if (r.IsConfirmed == false)
+                        {
+                            <form asp-action="ToggleRoom" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@r.Id" />
+                                <input type="hidden" name="action" value="enable" />
+                                <button type="submit" class="ab success" style="font-size:.62rem;padding:4px 8px;">
+                                    เปิดใช้งาน
+                                </button>
+                            </form>
+                        }
+
+                        @* ลบ *@
+                        <form asp-action="DeleteRoom" method="post" style="display:inline;"
+                              onsubmit="return confirm('@(r.ActiveBookings > 0 ? "ห้องนี้มีการจอง active อยู่ จะตั้งเป็น รอลบ ยืนยัน?" : "ยืนยันการลบห้อง " + r.RoomName + "?")')">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@r.Id" />
+                            <button type="submit" class="ab danger" style="font-size:.62rem;padding:4px 8px;">
+                                @(r.ActiveBookings > 0 ? "ปิด+ตั้งรอลบ" : "ลบ")
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        }
+    </div>
+
+    @* Summary Table *@
+    <div class="cc">
+        <div class="cc-ttl">สรุปสถานะห้อง</div>
+        <div class="table-responsive">
+            <table class="tbl">
+                <thead>
+                    <tr>
+                        <th>ห้อง</th>
+                        <th>ประเภท</th>
+                        <th>ความจุ</th>
+                        <th>ราคา/ชม.</th>
+                        <th>การจอง active</th>
+                        <th>สถานะ</th>
+                        <th>จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        <tr>
+                            <td>X<strong>@r.RoomName</strong></td>
+                            @* <td style="font-size:.78rem;color:var(--ns-ink3);">@r.Type</td> *@
+                            @* <td>@r.Cap คน</td> *@
+                            <td style="font-family:'Kanit',sans-serif;">฿@r.PricePerHour.ToString("N0")</td>
+                            <td>
+                                @if (r.ActiveBookings > 0)
+                                {
+                                    <span style="color:var(--ns-amber);font-weight:600;">@r.ActiveBookings รายการ</span>
+                                }
+                                else
+                                {
+                                    <span style="color:var(--ns-ink3);">—</span>
+                                }
+                            </td>
+                            <td>
+                                @if (r.IsConfirmed == true)
+                                {
+                                    <span class="rm-status-badge rm-st-active">เปิดอยู่</span>
+                                }
+                                else if (r.IsConfirmed == false)
+                                {
+                                    <span class="rm-status-badge rm-st-disabled">ปิดชั่วคราว</span>
+                                }
+                                else
+                                {
+                                    <span class="rm-status-badge rm-st-pending">รอลบ</span>
+                                }
+                            </td>
+                            <td style="white-space:nowrap;">
+                                <a asp-action="RoomEdit" asp-route-id="@r.Id" class="ab sm"
+                                       style="font-size:.62rem;padding:4px 8px;text-decoration:none;">
+                                    แก้ไข
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

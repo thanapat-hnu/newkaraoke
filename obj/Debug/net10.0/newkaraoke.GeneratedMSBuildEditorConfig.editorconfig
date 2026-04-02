@@ -30,12 +30,44 @@ build_property._RazorSourceGeneratorDebug =
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
+[C:/Users/acer/Documents/newkaraoke/Views/Ceo/Customers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2VvXEN1c3RvbWVycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/Ceo/Heatmap.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2VvXEhlYXRtYXAuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/Ceo/Revenue.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2VvXFJldmVudWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/Ceo/Rooms.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2VvXFJvb21zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/acer/Documents/newkaraoke/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/acer/Documents/newkaraoke/Views/It/Logs.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcTG9ncy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/It/Promotions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW90aW9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/It/Users.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcVXNlcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/acer/Documents/newkaraoke/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/Shared/_AdminLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pbkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/acer/Documents/newkaraoke/Views/Shared/_BookingLayout.cshtml]
@@ -44,6 +76,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/acer/Documents/newkaraoke/Views/Shared/_IndexLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9JbmRleExheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/Shared/_ITLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9JVExheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/acer/Documents/newkaraoke/Views/Shared/_Layout.cshtml]
@@ -62,8 +98,28 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TdGFmZkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/acer/Documents/newkaraoke/Views/StaffAuth/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZBdXRoXExvZ2luLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/Staff/Bookings.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcQm9va2luZ3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/acer/Documents/newkaraoke/Views/Staff/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/Staff/Promotions.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcUHJvbW90aW9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/Staff/RoomCreate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcUm9vbUNyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/Staff/RoomManagement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcUm9vbU1hbmFnZW1lbnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/acer/Documents/newkaraoke/Views/User/Auth.cshtml]

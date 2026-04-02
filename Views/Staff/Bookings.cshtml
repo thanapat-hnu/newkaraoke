@@ -1,0 +1,152 @@
+@{
+    Layout = "_StaffLayout";
+}
+@* Views/Staff/Bookings.cshtml — จัดการการจอง
+   Model: BookingsViewModel
+     .Bookings     — List<BookingRowDto>
+     .Rooms        — List<RoomSelectDto>  (สำหรับ dropdown filter)
+     .SearchQuery  — string
+     .StatusFilter — string
+     .RoomFilter   — string
+     .TotalCount   — int
+*@
+
+@* @{
+    Layout = "~/Views/Shared/_StaffLayout.cshtml";
+    ViewBag.Title = "จัดการการจอง";
+    ViewBag.ActiveNav = "bookings";
+} *@
+
+<div class="p-4" style="position:relative;z-index:1;">
+
+    <div class="pg-ttl">จัดการการจอง</div>
+    <p class="pg-sub mb-3">ดู ยืนยัน และยกเลิกการจอง</p>
+
+    <div class="tc">
+        <div class="th">
+            <div class="th-ttl">รายการจองทั้งหมด</div>
+
+            @* Filter — GET form ไม่ต้องใช้ JS *@
+            <form method="get" asp-action="Bookings" class="d-flex gap-2 flex-wrap">
+                <input type="text" class="ti" name="q" value="@Model.SearchQuery"
+                       placeholder="ค้นหา รหัส / ชื่อ / ห้อง..." style="width:200px;">
+
+                <select class="ti" name="status" style="width:130px;" onchange="this.form.submit()">
+                    <option value="">สถานะทั้งหมด</option>
+                    @* <option value="confirmed" @(Model.StatusFilter == "confirmed" ? "selected" : "")>
+                        ยืนยันแล้ว
+                    </option>
+                    <option value="pending" @(Model.StatusFilter == "pending" ? "selected" : "")>
+                        รอดำเนินการ
+                    </option> *@
+                </select>
+
+                <select class="ti" name="room" style="width:130px;" onchange="this.form.submit()">
+                    <option value="">ห้องทั้งหมด</option>
+                    @* @foreach (var r in Model.Rooms) *@
+                    {
+                        @* <option value="@r.Id" @(Model.RoomFilter == r.Id ? "selected" : "")>
+                            @r.Name
+                        </option> *@
+                    }
+                </select>
+
+                <button type="submit" class="ab">ค้นหา</button>
+
+                @if (!string.IsNullOrEmpty(Model.SearchQuery) ||
+                                                                     !string.IsNullOrEmpty(Model.StatusFilter) ||
+                                                                     !string.IsNullOrEmpty(Model.RoomFilter))
+                {
+                    <a asp-action="Bookings" class="ab sm" style="text-decoration:none;">ล้างตัวกรอง</a>
+                }
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="tbl">
+                <thead>
+                    <tr>
+                        <th>รหัส</th>
+                        <th>ลูกค้า</th>
+                        <th>ห้อง</th>
+                        <th>วันที่</th>
+                        <th>เวลา</th>
+                        <th>คน</th>
+                        <th>ยอด</th>
+                        <th>ชำระ</th>
+                        <th>สถานะ</th>
+                        <th>จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var b in Model.Bookings)
+                    {
+                        <tr>
+                            <td style="font-family:'Kanit',sans-serif;font-size:.65rem;color:var(--ns-ink3);">
+                                @b.Code
+                            </td>
+                            <td>
+                                <div style="font-weight:600;font-size:.82rem;">@b.UserName</div>
+                                <div style="font-size:.7rem;color:var(--ns-ink3);">@b.UserEmail</div>
+                            </td>
+                            <td style="font-size:.8rem;">@b.RoomName</td>
+                            <td style="font-size:.78rem;">@b.DateDisplay</td>
+                            <td style="font-family:'Kanit',sans-serif;font-size:.78rem;">
+                                @b.StartTime–@b.EndTime
+                            </td>
+                            <td>@b.People</td>
+                            <td style="font-family:'Kanit',sans-serif;font-weight:600;font-size:.85rem;">
+                                ฿@b.Total.ToString("N0")
+                            </td>
+                            <td>
+                                <span
+                                    style="font-size:.65rem;padding:2px 6px;border:1px solid var(--ns-border-md);border-radius:2px;color:var(--ns-ink3);">
+                                    @b.PayMethodDisplay
+                                </span>
+                            </td>
+                            <td>
+                                <span class="tag @(b.Status == "confirmed" ? "tag-c" : "tag-p")">
+                                    @(b.Status == "confirmed" ? "ยืนยัน" : "รอ")
+                                </span>
+                            </td>
+                            <td style="white-space:nowrap;">
+                                @* ดูรายละเอียด *@
+                                <a asp-action="BookingDetail" asp-route-code="@b.Code" class="ab sm"
+                                       style="font-size:.62rem;padding:4px 8px;text-decoration:none;">
+                                    ดู
+                                </a>
+
+                                @* ยืนยัน — เฉพาะ pending *@
+                                @if (b.Status == "pending")
+                                {
+                                    <form asp-action="ConfirmBooking" method="post" style="display:inline;margin-left:3px;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="code" value="@b.Code" />
+                                        <button type="submit" class="ab success" style="font-size:.62rem;padding:4px 8px;">
+                                            ✓
+                                        </button>
+                                    </form>
+                                }
+
+                                @* ยกเลิก *@
+                                <form asp-action="CancelBooking" method="post" style="display:inline;margin-left:3px;"
+                                      onsubmit="return confirm('ยืนยันการยกเลิก @b.Code ?')">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="code" value="@b.Code" />
+                                    <button type="submit" class="ab danger" style="font-size:.62rem;padding:4px 8px;">
+                                        ✕
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="px-3 py-2 text-secondary small">
+            แสดง @Model.Bookings.Count / @Model.TotalCount รายการ
+        </div>
+    </div>
+
+</div>
