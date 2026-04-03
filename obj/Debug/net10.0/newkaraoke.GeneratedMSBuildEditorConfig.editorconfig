@@ -54,8 +54,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcTG9ncy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/acer/Documents/newkaraoke/Views/It/PromoCreate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/It/PromoDelete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/It/PromoEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/acer/Documents/newkaraoke/Views/It/Promotions.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW90aW9ucy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/It/PromoToggle.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW9Ub2dnbGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/acer/Documents/newkaraoke/Views/It/UserCreate.cshtml]

@@ -1,7 +1,4 @@
-@* Views/IT/Promotions.cshtml — จัดการโปรโมชั่น (IT สร้าง/แก้ไข/ลบได้)
-   Model: PromotionsViewModel (เหมือน Staff แต่ CanEdit = true)
-*@
-@* @model PromotionsViewModel *@
+@model IEnumerable<newkaraoke.Models.db.Promotion>
 @{
     Layout = "_ITLayout";
     ViewBag.Title = "โปรโมชั่น";
@@ -11,59 +8,119 @@
 <div class="p-4" style="position:relative;z-index:1;">
 
     <div class="pg-ttl">โปรโมชั่น</div>
-    <p class="pg-sub mb-2">สร้าง แก้ไข และจัดการโปรโมชั่น</p>
+    <p class="pg-sub mb-3">สร้าง แก้ไข และจัดการโปรโมชั่น</p>
 
-    <div class="mb-3">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+        <form method="get" asp-action="Promotions" class="d-flex gap-2">
+            <select class="ti" name="filter" style="width:150px;" onchange="this.form.submit()">
+                <option value="">ทั้งหมด</option>
+                <option value="active"   @(ViewBag.Filter == "active"   ? "selected" : "")>Active</option>
+                <option value="inactive" @(ViewBag.Filter == "inactive" ? "selected" : "")>ปิดใช้งาน</option>
+                <option value="expired"  @(ViewBag.Filter == "expired"  ? "selected" : "")>หมดอายุ</option>
+            </select>
+        </form>
         <a asp-action="PromoCreate" class="ab" style="text-decoration:none;">+ สร้างโปรโมชั่น</a>
     </div>
 
-    <div class="row g-px mb-3"
-         style="--bs-gutter-x:1px;--bs-gutter-y:1px;background:var(--ns-border);border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
-        @if (!Model.Promos.Any())
-        {
-            <div class="col-12 p-4 text-secondary small">ยังไม่มีโปรโมชั่น</div>
-        }
-        @foreach (var p in Model.Promos)
-        {
-            <div class="col-12 col-md-6 col-xl-4">
-                <div class="promo-card" style="@(!p.IsActive ? "opacity:.6" : "")">
-                    <span class="promo-status">
-                        <span class="tag @(p.IsActive ? "tag-c" : "tag-p")">
-                            @(p.IsActive ? "Active" : "หมดอายุ")
+    @if (!Model.Any())
+    {
+        <div class="tc">
+            <div class="p-4 text-center text-secondary small">ยังไม่มีโปรโมชั่น</div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-px mb-3"
+             style="--bs-gutter-x:1px;--bs-gutter-y:1px;background:var(--ns-border);border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
+            @foreach (var p in Model)
+            {
+                var today     = DateOnly.FromDateTime(DateTime.Today);
+                var isExpired = p.EndDate < today;
+                var isOn      = (p.IsActive ?? false) && !isExpired;
+
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="promo-card" style="@(!isOn ? "opacity:.6" : "")">
+
+                        <span class="promo-status">
+                            @if (isExpired)
+                            {
+                                <span class="tag tag-p">หมดอายุ</span>
+                            }
+                            else if (p.IsActive ?? false)
+                            {
+                                <span class="tag tag-c">Active</span>
+                            }
+                            else
+                            {
+                                <span class="tag tag-x">ปิดใช้งาน</span>
+                            }
                         </span>
-                    </span>
-                    <div class="promo-code">@p.Code</div>
-                    <div class="promo-desc">@p.Description</div>
-                    <div class="promo-footer">
-                        <div>
-                            <div class="promo-disc">@p.DiscountDisplay</div>
-                            <div class="promo-meta">
-                                @p.Used/@p.Limit ครั้ง · @p.StartDisplay – @p.EndDisplay
+
+                        <div class="promo-code">@p.Name</div>
+                        <div class="promo-desc">@(p.Description ?? "—")</div>
+                        @if (!string.IsNullOrEmpty(p.Condition))
+                        {
+                            <div class="promo-desc" style="font-size:.72rem;">📌 @p.Condition</div>
+                        }
+
+                        <div class="promo-footer">
+                            <div>
+                                <div class="promo-disc">
+                                    @(p.DiscountType switch {
+                                        "percent"   => $"ลด {p.Value}%",
+                                        "fixed"     => $"ลด ฿{p.Value:N0}",
+                                        "free_hour" => $"แถม {p.Value} ชม.",
+                                        _           => p.Value.ToString()
+                                    })
+                                </div>
+                                <div class="promo-meta">
+                                    @(p.UsedCount ?? 0)/@(p.UsageLimit?.ToString() ?? "∞") ครั้ง
+                                    · @p.StartDate.ToString("dd/MM/yy") – @p.EndDate.ToString("dd/MM/yy")
+                                </div>
+                                <div class="promo-meta mt-1">
+                                    สร้างโดย: @p.CreatedByNavigation.Name
+                                </div>
                             </div>
-                            <div class="promo-meta mt-1">สร้างโดย: @p.CreatedBy</div>
-                        </div>
-                        @* IT แก้ไข/ลบได้ *@
-                        <div class="d-flex flex-column gap-1">
-                            <a asp-action="PromoEdit" asp-route-id="@p.Id"
-                               class="ab sm" style="font-size:.62rem;padding:4px 8px;text-decoration:none;">
-                                แก้ไข
-                            </a>
-                            <form asp-action="PromoDelete" method="post"
-                                  onsubmit="return confirm('ลบโปรโมชั่น @p.Code ?')">
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@p.Id" />
-                                <button type="submit" class="ab danger"
-                                        style="font-size:.62rem;padding:4px 8px;width:100%;">
-                                    ลบ
-                                </button>
-                            </form>
+
+                            <div class="d-flex flex-column gap-1">
+                                <a asp-action="PromoEdit" asp-route-id="@p.Id"
+                                   class="ab sm"
+                                   style="font-size:.62rem;padding:4px 8px;text-decoration:none;">
+                                    แก้ไข
+                                </a>
+
+                                <!-- Toggle -->
+                                <form asp-action="PromoToggle" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@p.Id" />
+                                    <button type="submit" class="ab"
+                                            style="font-size:.62rem;padding:4px 8px;width:100%;
+                                            @(p.IsActive ?? false
+                                                ? "background:rgba(139,96,0,.1);color:var(--ns-amber);border:1px solid rgba(139,96,0,.2);"
+                                                : "background:rgba(42,122,68,.1);color:var(--ns-green);border:1px solid rgba(42,122,68,.2);")">
+                                        @(p.IsActive ?? false ? "ปิดใช้งาน" : "เปิดใช้งาน")
+                                    </button>
+                                </form>
+
+                                <!-- Delete -->
+                                <form asp-action="PromoDelete" method="post"
+                                      onsubmit="return confirm('ลบโปรโมชั่น @p.Name ?')">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@p.Id" />
+                                    <button type="submit" class="ab danger"
+                                            style="font-size:.62rem;padding:4px 8px;width:100%;">
+                                        ลบ
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        }
-    </div>
+            }
+        </div>
+    }
 
+    @* <!-- Usage History -->
     <div class="tc">
         <div class="th"><div class="th-ttl">ประวัติการใช้โปรโมชั่น</div></div>
         <div class="table-responsive">
@@ -71,29 +128,44 @@
                 <thead>
                     <tr>
                         <th>รหัสจอง</th><th>ลูกค้า</th>
-                        <th>โปรโมชั่น</th><th>ส่วนลด</th><th>วันที่ใช้</th>
+                        <th>โปรโมชั่น</th><th>ยอดรวม</th><th>วันที่ใช้</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (!Model.UsageHistory.Any())
-                    {
-                        <tr><td colspan="5" class="text-center p-4 text-secondary small">
-                            ยังไม่มีประวัติ
-                        </td></tr>
+                    @{
+                        var usages = Model
+                            .SelectMany(p => p.Bookings.Select(b => new {
+                                b.BookingCode,
+                                CustomerName = b.User.Name,
+                                PromoName    = p.Name,
+                                b.TotalPrice,
+                                b.BookingDate
+                            }))
+                            .OrderByDescending(x => x.BookingDate)
+                            .Take(20)
+                            .ToList();
                     }
-                    @foreach (var u in Model.UsageHistory)
+                    @if (!usages.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="text-center p-4 text-secondary small">
+                                ยังไม่มีประวัติการใช้
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var u in usages)
                     {
                         <tr>
                             <td style="font-family:'Kanit',sans-serif;font-size:.68rem;">@u.BookingCode</td>
-                            <td>@u.UserName</td>
-                            <td><span class="pb">@u.PromoCode</span></td>
-                            <td style="font-family:'Kanit',sans-serif;">฿@u.Discount.ToString("N0")</td>
-                            <td>@u.DateDisplay</td>
+                            <td>@u.CustomerName</td>
+                            <td><span class="pb">@u.PromoName</span></td>
+                            <td style="font-family:'Kanit',sans-serif;">฿@u.TotalPrice.ToString("N0")</td>
+                            <td style="font-size:.78rem;">@u.BookingDate.ToString("dd/MM/yyyy")</td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
-    </div>
+    </div> *@
 
 </div>

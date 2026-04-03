@@ -1,0 +1,154 @@
+@model newkaraoke.ViewModels.PromotionForm
+@{
+    Layout = "_ITLayout";
+    ViewBag.Title = "แก้ไขโปรโมชั่น";
+    ViewBag.ActiveNav = "promotions";
+}
+
+<div class="p-4" style="position:relative;z-index:1;">
+
+    <div class="d-flex align-items-center gap-2 mb-1">
+        <a asp-action="Promotions"
+           style="font-size:.78rem;color:var(--ns-ink3);text-decoration:none;">
+            ← โปรโมชั่น
+        </a>
+    </div>
+    <div class="pg-ttl">แก้ไขโปรโมชั่น</div>
+    <p class="pg-sub mb-4">
+        ID: <strong>@ViewBag.PromoId</strong>
+        · ใช้ไปแล้ว <strong>@ViewBag.UsedCount</strong> ครั้ง
+    </p>
+
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="tc">
+                <div class="th"><div class="th-ttl">ข้อมูลโปรโมชั่น</div></div>
+                <div class="p-4">
+
+                    <form asp-action="PromoEdit" asp-route-id="@ViewBag.PromoId" method="post">
+                        @Html.AntiForgeryToken()
+
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger py-2 small mb-3">
+                                @Html.ValidationSummary(false)
+                            </div>
+                        }
+
+                        <div class="row g-3">
+
+                            <div class="col-12">
+                                <label asp-for="Name" class="form-label">
+                                    ชื่อโปรโมชั่น <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <input asp-for="Name" class="form-control">
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Description" class="form-label">คำอธิบาย</label>
+                                <input asp-for="Description" class="form-control">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="DiscountType" class="form-label">
+                                    ประเภทส่วนลด <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <select asp-for="DiscountType" class="form-select" id="discountType"
+                                        onchange="updateValueLabel()">
+                                    <option value="percent">% ส่วนลด</option>
+                                    <option value="fixed">ลดคงที่ (฿)</option>
+                                    <option value="free_hour">แถมชั่วโมง</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Value" class="form-label" id="valueLabel">
+                                    ส่วนลด <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <input asp-for="Value" class="form-control"
+                                       type="number" min="0.01" step="0.01">
+                                <span asp-validation-for="Value" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Condition" class="form-label">เงื่อนไข</label>
+                                <input asp-for="Condition" class="form-control">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="StartDate" class="form-label">
+                                    วันเริ่ม <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <input asp-for="StartDate" class="form-control" type="date">
+                                <span asp-validation-for="StartDate" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="EndDate" class="form-label">
+                                    วันหมดอายุ <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <input asp-for="EndDate" class="form-control" type="date">
+                                <span asp-validation-for="EndDate" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="UsageLimit" class="form-label">
+                                    จำนวนครั้งที่ใช้ได้
+                                </label>
+                                <input asp-for="UsageLimit" class="form-control"
+                                       type="number" min="1"
+                                       placeholder="ปล่อยว่าง = ไม่จำกัด">
+                                <span class="text-secondary" style="font-size:.7rem;">
+                                    ใช้ไปแล้ว @ViewBag.UsedCount ครั้ง
+                                </span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">สถานะ</label>
+                                <div class="mt-1">
+                                    <div class="form-check form-switch mb-0">
+                                        <input asp-for="IsActive" class="form-check-input"
+                                               type="checkbox" role="switch" id="isActiveSwitch">
+                                        <label class="form-check-label" for="isActiveSwitch"
+                                               style="font-size:.85rem;">
+                                            เปิดใช้งาน
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        @if (ViewBag.CreatedAt != null)
+                        {
+                            <div class="notice info mt-3" style="font-size:.75rem;">
+                                สร้างโดย: <strong>@ViewBag.CreatedBy</strong>
+                                · เมื่อ <strong>@ViewBag.CreatedAt</strong>
+                            </div>
+                        }
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-dark px-4">บันทึกการแก้ไข</button>
+                            <a asp-action="Promotions" class="btn btn-outline-secondary px-4">ยกเลิก</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+<script>
+    const labels = { percent: 'ส่วนลด (%)', fixed: 'ลดคงที่ (฿)', free_hour: 'แถม (ชม.)' };
+    function updateValueLabel() {
+        const type = document.getElementById('discountType').value;
+        document.getElementById('valueLabel').innerHTML =
+            labels[type] + ' <span style="color:var(--ns-red);">*</span>';
+    }
+    updateValueLabel();
+</script>
+}
