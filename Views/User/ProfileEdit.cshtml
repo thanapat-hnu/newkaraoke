@@ -1,0 +1,117 @@
+@{
+    Layout = "_IndexLayout";
+    ViewBag.Title = "แก้ไขโปรไฟล์";
+}
+
+<div class="container py-5" style="max-width:600px;position:relative;z-index:1;">
+
+    <div class="d-flex align-items-center gap-2 mb-1">
+        <a asp-action="Profile"
+           style="font-size:.78rem;color:var(--ns-ink3);text-decoration:none;">
+            ← โปรไฟล์
+        </a>
+    </div>
+    <div style="font-family:'Kanit',sans-serif;font-size:1.3rem;font-weight:900;letter-spacing:-.5px;">
+        แก้ไขโปรไฟล์
+    </div>
+    <p class="text-secondary mb-4" style="font-size:.8rem;">แก้ไขข้อมูลส่วนตัวและรหัสผ่าน</p>
+
+    <!-- ── ข้อมูลส่วนตัว ── -->
+    <div class="tc mb-4">
+        <div class="th"><div class="th-ttl">ข้อมูลส่วนตัว</div></div>
+        <div class="p-4">
+
+            @if (TempData["EditError"] != null)
+            {
+                <div class="alert alert-danger py-2 small mb-3">@TempData["EditError"]</div>
+            }
+            @if (TempData["EditSuccess"] != null)
+            {
+                <div class="alert alert-success py-2 small mb-3">@TempData["EditSuccess"]</div>
+            }
+
+            <form asp-action="ProfileEditSave" method="post">
+                @Html.AntiForgeryToken()
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">
+                            ชื่อ-นามสกุล <span style="color:var(--ns-red);">*</span>
+                        </label>
+                        <input type="text" class="form-control" name="Name"
+                               value="@Context.Session.GetString("UserName")"
+                               placeholder="ชื่อ-นามสกุล">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">เบอร์โทรศัพท์</label>
+                        <input type="tel" class="form-control" name="Phone" id="editPhone"
+                               value="@ViewBag.Phone" placeholder="0812345678" maxlength="10">
+                        <div id="phoneErr" class="text-danger small d-none">
+                            เบอร์โทรต้องเป็นตัวเลข 10 หลัก
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">อีเมล</label>
+                        <input type="email" class="form-control"
+                               value="@Context.Session.GetString("UserEmail")"
+                               disabled>
+                        <div class="text-secondary" style="font-size:.72rem;">
+                            ไม่สามารถเปลี่ยนอีเมลได้
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-4">
+                    <button type="submit" class="btn btn-dark px-4">บันทึก</button>
+                    <a asp-action="Profile" class="btn btn-outline-secondary px-4">ยกเลิก</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── เปลี่ยนรหัสผ่าน ── -->
+    <div class="tc">
+        <div class="th"><div class="th-ttl">เปลี่ยนรหัสผ่าน</div></div>
+        <div class="p-4">
+
+            @if (TempData["PassError"] != null)
+            {
+                <div class="alert alert-danger py-2 small mb-3">@TempData["PassError"]</div>
+            }
+            @if (TempData["PassSuccess"] != null)
+            {
+                <div class="alert alert-success py-2 small mb-3">@TempData["PassSuccess"]</div>
+            }
+
+            <form asp-action="ChangePassword" method="post">
+                @Html.AntiForgeryToken()
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">
+                            รหัสผ่านปัจจุบัน <span style="color:var(--ns-red);">*</span>
+                        </label>
+                        <input type="password" class="form-control" name="CurrentPassword"
+                               placeholder="••••••••">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">
+                            รหัสผ่านใหม่ (อย่างน้อย 6 ตัว) <span style="color:var(--ns-red);">*</span>
+                        </label>
+                        <input type="password" class="form-control" name="NewPassword"
+                               placeholder="••••••••">
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-dark px-4">เปลี่ยนรหัสผ่าน</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+<script>
+    document.getElementById('editPhone').addEventListener('keypress', e => {
+        if (!/[0-9]/.test(e.key)) e.preventDefault();
+    });
+</script>
+}

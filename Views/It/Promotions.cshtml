@@ -14,9 +14,9 @@
         <form method="get" asp-action="Promotions" class="d-flex gap-2">
             <select class="ti" name="filter" style="width:150px;" onchange="this.form.submit()">
                 <option value="">ทั้งหมด</option>
-                <option value="active"   @(ViewBag.Filter == "active"   ? "selected" : "")>Active</option>
+                @* <option value="active"   @(ViewBag.Filter == "active"   ? "selected" : "")>Active</option>
                 <option value="inactive" @(ViewBag.Filter == "inactive" ? "selected" : "")>ปิดใช้งาน</option>
-                <option value="expired"  @(ViewBag.Filter == "expired"  ? "selected" : "")>หมดอายุ</option>
+                <option value="expired"  @(ViewBag.Filter == "expired"  ? "selected" : "")>หมดอายุ</option> *@
             </select>
         </form>
         <a asp-action="PromoCreate" class="ab" style="text-decoration:none;">+ สร้างโปรโมชั่น</a>
