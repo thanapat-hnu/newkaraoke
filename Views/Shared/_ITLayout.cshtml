@@ -15,15 +15,13 @@
     <div id="sb">
         <div class="sb-logo">
             <div class="sb-name">Neon Star<span class="sb-sup">KARAOKE</span></div>
-            <div class="sb-role-badge role-it">IT</div>
+            <div class="sb-role-badge role-@Context.Session.GetString("UserRole")">
+                @Context.Session.GetString("UserRole")
+            </div>
         </div>
 
         <nav class="sb-nav">
             <div class="sb-sec">Management</div>
-            <a class="sb-item @(ViewBag.ActiveNav == "dashboard"  ? "active" : "")"
-               asp-controller="IT" asp-action="Index">
-                <span class="sb-icon">◈</span> Dashboard
-            </a>
             <a class="sb-item @(ViewBag.ActiveNav == "users"      ? "active" : "")"
                asp-controller="IT" asp-action="Users">
                 <span class="sb-icon">⊡</span> ผู้ใช้ระบบ
@@ -40,10 +38,10 @@
 
         <div class="sb-footer">
             <div class="sb-user">
-                <strong>@User.Identity?.Name</strong><br>
-                <span style="font-size:.65rem;">IT Admin</span>
+                <strong>@Context.Session.GetString("UserName")</strong><br>
+                <span style="font-size:.65rem;">@Context.Session.GetString("UserRole")</span>
             </div>
-            <form asp-controller="Account" asp-action="Logout" method="post">
+            <form asp-controller="StaffAuth" asp-action="Logout" method="post">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="sb-logout">ออกจากระบบ</button>
             </form>

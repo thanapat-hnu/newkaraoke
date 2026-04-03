@@ -23,10 +23,10 @@
 
         <nav class="sb-nav">
             <div class="sb-sec">Operations</div>
-            <a class="sb-item @(ViewBag.ActiveNav == "dashboard"  ? "active" : "")"
+            @* <a class="sb-item @(ViewBag.ActiveNav == "dashboard"  ? "active" : "")"
                asp-controller="Staff" asp-action="Index">
                 <span class="sb-icon">◈</span> Dashboard
-            </a>
+            </a> *@
             <a class="sb-item @(ViewBag.ActiveNav == "bookings"   ? "active" : "")"
                asp-controller="Staff" asp-action="Bookings">
                 <span class="sb-icon">◻</span> การจอง

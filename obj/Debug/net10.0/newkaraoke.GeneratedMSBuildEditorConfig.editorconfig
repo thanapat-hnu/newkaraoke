@@ -58,6 +58,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW90aW9ucy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/acer/Documents/newkaraoke/Views/It/UserCreate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcVXNlckNyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/acer/Documents/newkaraoke/Views/It/UserEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcVXNlckVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/acer/Documents/newkaraoke/Views/It/Users.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcVXNlcnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

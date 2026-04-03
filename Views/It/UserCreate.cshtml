@@ -1,0 +1,97 @@
+@model newkaraoke.ViewModels.UserForm
+@{
+    Layout = "_ITLayout";
+    ViewBag.Title = "เพิ่มผู้ใช้ระบบ";
+    ViewBag.ActiveNav = "users";
+}
+
+<div class="p-4" style="position:relative;z-index:1;">
+
+    <div class="d-flex align-items-center gap-2 mb-1">
+        <a asp-action="Users"
+           style="font-size:.78rem;color:var(--ns-ink3);text-decoration:none;">
+            ← จัดการผู้ใช้
+        </a>
+    </div>
+    <div class="pg-ttl">เพิ่มผู้ใช้ระบบ</div>
+    <p class="pg-sub mb-4">สร้างบัญชี Back-office สำหรับ Admin / IT / Staff</p>
+
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="tc">
+                <div class="th">
+                    <div class="th-ttl">ข้อมูลผู้ใช้</div>
+                </div>
+                <div class="p-4">
+
+                    <form asp-asp-controller="It" asp-action="UserCreate" method="post">
+                        @Html.AntiForgeryToken()
+
+                        @* @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger py-2 small mb-3">
+                                @Html.ValidationSummary(false)
+                            </div>
+                        } *@
+
+                        <div class="row g-3">
+
+                            <div class="col-12">
+                                <label asp-for="Name" class="form-label">
+                                    ชื่อ-นามสกุล <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <input asp-for="Name" class="form-control" placeholder="เช่น สมชาย ใจดี">
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Email" class="form-label">
+                                    อีเมล <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <input asp-for="Email" class="form-control" type="email"
+                                       placeholder="email@neonstar.com">
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12">
+                                <label asp-for="Password" class="form-label">
+                                    รหัสผ่าน <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <input asp-for="Password" class="form-control" type="password"
+                                       placeholder="อย่างน้อย 6 ตัว">
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Role" class="form-label">
+                                    Role <span style="color:var(--ns-red);">*</span>
+                                </label>
+                                <select asp-for="Role" class="form-select">
+                                    <option value="staff">Staff — จัดการการจอง/ห้อง</option>
+                                    <option value="it">IT — จัดการผู้ใช้/โปรโมชั่น</option>
+                                    <option value="admin">Admin — ดู Analytics</option>
+                                </select>
+                                <span asp-validation-for="Role" class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label asp-for="Phone" class="form-label">เบอร์โทรศัพท์</label>
+                                <input asp-for="Phone" class="form-control" type="tel"
+                                       placeholder="08X-XXX-XXXX">
+                                <span asp-validation-for="Phone" class="text-danger small"></span>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-dark px-4">บันทึก</button>
+                            <a asp-action="Users" class="btn btn-outline-secondary px-4">ยกเลิก</a>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

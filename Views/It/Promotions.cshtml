@@ -1,3 +1,99 @@
+@* Views/IT/Promotions.cshtml — จัดการโปรโมชั่น (IT สร้าง/แก้ไข/ลบได้)
+   Model: PromotionsViewModel (เหมือน Staff แต่ CanEdit = true)
+*@
+@* @model PromotionsViewModel *@
 @{
     Layout = "_ITLayout";
+    ViewBag.Title = "โปรโมชั่น";
+    ViewBag.ActiveNav = "promotions";
 }
+
+<div class="p-4" style="position:relative;z-index:1;">
+
+    <div class="pg-ttl">โปรโมชั่น</div>
+    <p class="pg-sub mb-2">สร้าง แก้ไข และจัดการโปรโมชั่น</p>
+
+    <div class="mb-3">
+        <a asp-action="PromoCreate" class="ab" style="text-decoration:none;">+ สร้างโปรโมชั่น</a>
+    </div>
+
+    <div class="row g-px mb-3"
+         style="--bs-gutter-x:1px;--bs-gutter-y:1px;background:var(--ns-border);border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
+        @if (!Model.Promos.Any())
+        {
+            <div class="col-12 p-4 text-secondary small">ยังไม่มีโปรโมชั่น</div>
+        }
+        @foreach (var p in Model.Promos)
+        {
+            <div class="col-12 col-md-6 col-xl-4">
+                <div class="promo-card" style="@(!p.IsActive ? "opacity:.6" : "")">
+                    <span class="promo-status">
+                        <span class="tag @(p.IsActive ? "tag-c" : "tag-p")">
+                            @(p.IsActive ? "Active" : "หมดอายุ")
+                        </span>
+                    </span>
+                    <div class="promo-code">@p.Code</div>
+                    <div class="promo-desc">@p.Description</div>
+                    <div class="promo-footer">
+                        <div>
+                            <div class="promo-disc">@p.DiscountDisplay</div>
+                            <div class="promo-meta">
+                                @p.Used/@p.Limit ครั้ง · @p.StartDisplay – @p.EndDisplay
+                            </div>
+                            <div class="promo-meta mt-1">สร้างโดย: @p.CreatedBy</div>
+                        </div>
+                        @* IT แก้ไข/ลบได้ *@
+                        <div class="d-flex flex-column gap-1">
+                            <a asp-action="PromoEdit" asp-route-id="@p.Id"
+                               class="ab sm" style="font-size:.62rem;padding:4px 8px;text-decoration:none;">
+                                แก้ไข
+                            </a>
+                            <form asp-action="PromoDelete" method="post"
+                                  onsubmit="return confirm('ลบโปรโมชั่น @p.Code ?')">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@p.Id" />
+                                <button type="submit" class="ab danger"
+                                        style="font-size:.62rem;padding:4px 8px;width:100%;">
+                                    ลบ
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="tc">
+        <div class="th"><div class="th-ttl">ประวัติการใช้โปรโมชั่น</div></div>
+        <div class="table-responsive">
+            <table class="tbl">
+                <thead>
+                    <tr>
+                        <th>รหัสจอง</th><th>ลูกค้า</th>
+                        <th>โปรโมชั่น</th><th>ส่วนลด</th><th>วันที่ใช้</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.UsageHistory.Any())
+                    {
+                        <tr><td colspan="5" class="text-center p-4 text-secondary small">
+                            ยังไม่มีประวัติ
+                        </td></tr>
+                    }
+                    @foreach (var u in Model.UsageHistory)
+                    {
+                        <tr>
+                            <td style="font-family:'Kanit',sans-serif;font-size:.68rem;">@u.BookingCode</td>
+                            <td>@u.UserName</td>
+                            <td><span class="pb">@u.PromoCode</span></td>
+                            <td style="font-family:'Kanit',sans-serif;">฿@u.Discount.ToString("N0")</td>
+                            <td>@u.DateDisplay</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
