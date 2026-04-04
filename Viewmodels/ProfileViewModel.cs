@@ -18,15 +18,15 @@ public class ProfileViewModel
     public List<BookingRowDto> RecentBookings { get; set; } = new();
 }
 
-public class BookingRowDto
-{
-    public string   Code        { get; set; } = "";
-    public string   RoomName    { get; set; } = "";
-    public string   Date        { get; set; } = "";
-    public string   Time        { get; set; } = "";
-    public decimal  TotalPrice  { get; set; }
-    public string?  Status      { get; set; }
-}
+// public class BookingRowDto
+// {
+//     public string   Code        { get; set; } = "";
+//     public string   RoomName    { get; set; } = "";
+//     public string   Date        { get; set; } = "";
+//     public string   Time        { get; set; } = "";
+//     public decimal  TotalPrice  { get; set; }
+//     public string?  Status      { get; set; }
+// }
 
 // ── Edit Form ──────────────────────────────────────────
 public class ProfileEditForm

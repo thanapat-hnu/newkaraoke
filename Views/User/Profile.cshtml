@@ -14,48 +14,38 @@
     <!-- PROFILE HERO -->
     <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 pb-4 mb-4 border-bottom">
         <div class="d-flex align-items-center gap-3">
-            <div class="avatar">
-                @Model.Name[0].ToString().ToUpper()
-            </div>
+            <div class="avatar">@Model.Name[0].ToString().ToUpper()</div>
             <div>
                 <div style="font-family:'Kanit',sans-serif;font-size:1.4rem;font-weight:900;letter-spacing:-.5px;">
                     @Model.Name
                 </div>
                 <div class="text-secondary small">@Model.Email</div>
-                <div class="text-secondary" style="font-size:.75rem;">
-                    สมาชิกตั้งแต่ @Model.JoinedAt
-                </div>
+                <div class="text-secondary" style="font-size:.75rem;">สมาชิกตั้งแต่ @Model.JoinedAt</div>
             </div>
         </div>
-        <a asp-action="ProfileEdit" class="btn btn-outline-secondary btn-sm">
-            แก้ไขโปรไฟล์
-        </a>
+        <a asp-action="ProfileEdit" class="btn btn-outline-secondary btn-sm">แก้ไขโปรไฟล์</a>
     </div>
 
     <!-- STATS -->
-    <div class="row g-px mb-4"
-         style="--bs-gutter-x:1px;--bs-gutter-y:1px;background:var(--ns-border);border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
-        <div class="col-4">
+    <div class="row g-0 mb-4"
+         style="border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
+        <div class="col-4" style="border-right:1px solid var(--ns-border);">
             <div class="p-3">
                 <div class="text-uppercase text-secondary mb-1"
                      style="font-size:.6rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">
                     จองทั้งหมด
                 </div>
-                <div style="font-family:'Kanit',sans-serif;font-size:1.75rem;font-weight:900;">
-                    @Model.TotalBookings
-                </div>
+                <div style="font-family:'Kanit',sans-serif;font-size:1.75rem;font-weight:900;">@Model.TotalBookings</div>
                 <div class="text-secondary" style="font-size:.7rem;">ครั้ง</div>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-4" style="border-right:1px solid var(--ns-border);">
             <div class="p-3">
                 <div class="text-uppercase text-secondary mb-1"
                      style="font-size:.6rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">
                     ชั่วโมงรวม
                 </div>
-                <div style="font-family:'Kanit',sans-serif;font-size:1.75rem;font-weight:900;">
-                    @Model.TotalHours.ToString("N1")
-                </div>
+                <div style="font-family:'Kanit',sans-serif;font-size:1.75rem;font-weight:900;">@Model.TotalHours.ToString("N1")</div>
                 <div class="text-secondary" style="font-size:.7rem;">ชั่วโมง</div>
             </div>
         </div>
@@ -65,9 +55,7 @@
                      style="font-size:.6rem;letter-spacing:2px;font-family:'Kanit',sans-serif;font-weight:700;">
                     ยอดใช้จ่าย
                 </div>
-                <div style="font-family:'Kanit',sans-serif;font-size:1.75rem;font-weight:900;">
-                    ฿@Model.TotalSpend.ToString("N0")
-                </div>
+                <div style="font-family:'Kanit',sans-serif;font-size:1.75rem;font-weight:900;">฿@Model.TotalSpend.ToString("N0")</div>
                 <div class="text-secondary" style="font-size:.7rem;">บาท</div>
             </div>
         </div>
@@ -78,55 +66,90 @@
         <div style="font-family:'Kanit',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--ns-ink3);">
             ประวัติการจองล่าสุด
         </div>
-        <a asp-action="Bookings" class="text-secondary text-decoration-none"
-           style="font-size:.78rem;">ดูทั้งหมด →</a>
+        <a asp-action="BookingHistory" class="text-secondary text-decoration-none" style="font-size:.78rem;">
+            ดูทั้งหมด →
+        </a>
     </div>
 
-    @if (!Model.RecentBookings.Any())
-    {
-        <div class="tc">
+    <div style="border:1px solid var(--ns-border);border-radius:4px;overflow:hidden;">
+        @if (!Model.RecentBookings.Any())
+        {
             <div class="p-4 text-center text-secondary small">ยังไม่มีประวัติการจอง</div>
-        </div>
-    }
-    else
-    {
-        <div class="tc">
+        }
+        else
+        {
             <div class="table-responsive">
-                <table class="tbl">
-                    <thead>
+                <table class="table table-hover mb-0" style="font-size:.85rem;">
+                    <thead style="background:var(--ns-surface);border-bottom:1px solid var(--ns-border);">
                         <tr>
-                            <th>รหัสจอง</th>
-                            <th>ห้อง</th>
-                            <th>วันที่</th>
-                            <th>เวลา</th>
-                            <th>ยอด</th>
-                            <th>สถานะ</th>
+                            <th class="px-3 py-2 fw-semibold text-secondary"
+                                style="font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;border:none;">
+                                รหัสจอง
+                            </th>
+                            <th class="px-3 py-2 fw-semibold text-secondary"
+                                style="font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;border:none;">
+                                ห้อง
+                            </th>
+                            <th class="px-3 py-2 fw-semibold text-secondary"
+                                style="font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;border:none;">
+                                วันที่
+                            </th>
+                            <th class="px-3 py-2 fw-semibold text-secondary"
+                                style="font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;border:none;">
+                                เวลา
+                            </th>
+                            <th class="px-3 py-2 fw-semibold text-secondary"
+                                style="font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;border:none;">
+                                ยอด
+                            </th>
+                            <th class="px-3 py-2 fw-semibold text-secondary"
+                                style="font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;border:none;">
+                                สถานะ
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var b in Model.RecentBookings)
                         {
-                            <tr>
-                                <td style="font-family:'Kanit',sans-serif;font-size:.65rem;color:var(--ns-ink3);">
+                            <tr style="border-color:var(--ns-border);">
+                                <td class="px-3 py-2" style="font-family:'Kanit',sans-serif;font-size:.65rem;color:var(--ns-ink3);border-color:var(--ns-border);">
                                     @b.Code
                                 </td>
-                                <td style="font-size:.82rem;font-weight:600;">@b.RoomName</td>
-                                <td style="font-size:.78rem;">@b.Date</td>
-                                <td style="font-family:'Kanit',sans-serif;font-size:.78rem;">@b.Time</td>
-                                <td style="font-family:'Kanit',sans-serif;font-weight:600;">
+                                <td class="px-3 py-2 fw-semibold" style="border-color:var(--ns-border);">@b.RoomName</td>
+                                <td class="px-3 py-2" style="font-size:.78rem;border-color:var(--ns-border);">@b.Date</td>
+                                <td class="px-3 py-2" style="font-family:'Kanit',sans-serif;font-size:.78rem;border-color:var(--ns-border);">@b.Time</td>
+                                <td class="px-3 py-2 fw-semibold" style="font-family:'Kanit',sans-serif;border-color:var(--ns-border);">
                                     ฿@b.TotalPrice.ToString("N0")
                                 </td>
-                                <td>
-                                    <span class="tag @(b.Status == "confirmed" ? "tag-c" : "tag-p")">
-                                        @(b.Status == "confirmed" ? "ยืนยัน" : "รอ")
-                                    </span>
+                                <td class="px-3 py-2" style="border-color:var(--ns-border);">
+                                    @if (b.Status == "confirmed")
+                                    {
+                                        <span class="badge rounded-pill"
+                                              style="background:rgba(42,122,68,.12);color:#2a7a44;font-size:.65rem;font-weight:600;padding:4px 8px;">
+                                            ยืนยันแล้ว
+                                        </span>
+                                    }
+                                    else if (b.Status == "pending")
+                                    {
+                                        <span class="badge rounded-pill"
+                                              style="background:rgba(139,96,0,.12);color:#8b6000;font-size:.65rem;font-weight:600;padding:4px 8px;">
+                                            รอดำเนินการ
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge rounded-pill"
+                                              style="background:rgba(176,48,48,.12);color:#b03030;font-size:.65rem;font-weight:600;padding:4px 8px;">
+                                            @b.Status
+                                        </span>
+                                    }
                                 </td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
-        </div>
-    }
+        }
+    </div>
 
 </div>

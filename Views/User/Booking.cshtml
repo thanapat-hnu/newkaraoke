@@ -1,5 +1,7 @@
-﻿@{
+﻿@model newkaraoke.ViewModels.BookingPageViewModel
+@{
     Layout = "_IndexLayout";
+    ViewBag.Title = "จองห้อง";
     var userId = Context.Session.GetString("UserId");
 }
 
@@ -9,258 +11,184 @@
         <div class="text-center p-4">
             <h2 class="font-kanit fw-black mb-2">กรุณาเข้าสู่ระบบ</h2>
             <p class="text-secondary mb-4">เพื่อจองห้องคาราโอเกะ</p>
-            <a href="/Auth" class="btn btn-dark px-4">เข้าสู่ระบบ →</a>
+            <a asp-controller="User" asp-action="Auth" class="btn btn-dark px-4">เข้าสู่ระบบ →</a>
         </div>
     </div>
 }
 else
 {
-<div>
-    <!-- TOAST (Bootstrap) -->
-    <div class="position-fixed bottom-0 end-0 p-3" style="z-index:900;">
-        <div id="liveToast" class="toast bg-dark text-white align-items-center border-0" role="alert">
-            <div class="d-flex">
-                <div class="toast-body fw-semibold" id="toastBody"
-                     style="font-family:'Kanit',sans-serif;font-size:.8rem;"></div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-            </div>
-        </div>
-    </div>
+<div class="container" style="max-width:860px;padding:2.5rem 1.5rem 5rem;position:relative;z-index:1;">
 
-    <!-- SUCCESS MODAL (Bootstrap) -->
-    <div class="modal fade" id="successModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-0" style="background:var(--ns-bg);border-radius:4px !important;">
-                <div class="modal-body text-center p-4 d-flex flex-column align-items-center gap-3">
-                    <div style="width:60px;height:60px;border-radius:50%;background:var(--ns-surface);border:1px solid var(--ns-border-md);display:flex;align-items:center;justify-content:center;font-family:'Kanit',sans-serif;font-size:1.3rem;font-weight:700;">
-                        ✓</div>
-                    <h5 class="font-kanit fw-bold mb-0">จองสำเร็จแล้ว</h5>
-                    <p class="text-secondary small mb-0">รหัสการจองของคุณ</p>
-                    <div id="mCode"
-                         style="font-family:'Kanit',sans-serif;font-size:2rem;font-weight:900;letter-spacing:6px;border-bottom:2px solid var(--ns-ink);padding-bottom:4px;">
-                        NS-0000</div>
-                    <div id="mPayMethod" class="text-secondary small"></div>
-                    <p class="text-secondary small mb-0" style="max-width:270px;line-height:1.9;">
-                        กรุณาแสดงรหัสนี้ที่เคาน์เตอร์ในวันที่จอง</p>
-                    <button class="btn btn-dark w-100" data-bs-dismiss="modal">เสร็จสิ้น</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="sec-label">จองห้อง</div>
+    <h1 class="font-kanit fw-black mb-4"
+        style="font-size:clamp(1.6rem,3vw,2.4rem);letter-spacing:-1px;">จองในไม่กี่ขั้น</h1>
 
-    <!-- BOOKING CONTENT -->
-    <div class="container" style="max-width:860px;padding:2.5rem 1.5rem 5rem;position:relative;z-index:1;">
-        <div class="sec-label">จองห้อง</div>
-        <div class="d-flex align-items-baseline justify-content-between flex-wrap gap-2 mb-4">
-            <h1 class="font-kanit fw-black mb-0" style="font-size:clamp(1.6rem,3vw,2.4rem);letter-spacing:-1px;">จองในไม่กี่ขั้น</h1>
-        </div>
+    @if (Model.Error != null)
+    {
+        <div class="alert alert-danger py-2 small mb-3">@Model.Error</div>
+    }
 
-        <!-- ── STEP 1: DATE ── -->
+    <form asp-action="BookingSubmit" method="post" id="bookingForm">
+        @Html.AntiForgeryToken()
+
+        <!-- ── STEP 1: DATE (JS Calendar) ── -->
         <div class="step-item active" id="step1">
             <div class="step-btn" onclick="toggleStep(1)">
-                <div class="step-num-badge" id="sn1">1</div>
+                <div class="step-num-badge">1</div>
                 <div class="flex-grow-1">
                     <div class="font-kanit fw-bold" style="font-size:.88rem;">เลือกวันที่</div>
-                    <div class="step-val" id="sv1">จองล่วงหน้าได้สูงสุด 7 วัน</div>
+                    <div class="step-val" id="sv1">
+                        @(Model.SelectedDate != null
+                            ? DateTime.Parse(Model.SelectedDate).ToString("dd/MM/yyyy")
+                            : "จองล่วงหน้าได้สูงสุด 7 วัน")
+                    </div>
                 </div>
                 <span class="step-chevron">▼</span>
             </div>
             <div class="step-body">
                 <div class="d-flex align-items-center justify-content-between mb-3 pt-1">
-                    <button class="btn btn-outline-secondary btn-sm px-2 py-1" onclick="prevMonth()">‹</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-2 py-1" onclick="prevMonth()">‹</button>
                     <span class="font-kanit fw-bold" id="calMonth"></span>
-                    <button class="btn btn-outline-secondary btn-sm px-2 py-1" onclick="nextMonth()">›</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm px-2 py-1" onclick="nextMonth()">›</button>
                 </div>
-                <div class="cal-grid" id="calGrid"></div>
-                <p class="text-secondary mt-2 mb-0" style="font-size:.72rem;">จองล่วงหน้าได้สูงสุด 7 วัน · วันที่เป็นสีจางจองไม่ได้</p>
-                <button class="btn btn-dark w-100 mt-3" id="confirmStep1" disabled onclick="confirmStep(1)">ยืนยันวันที่ →</button>
+                <div id="calGrid"></div>
+                <p class="text-secondary mt-2 mb-0" style="font-size:.72rem;">
+                    จองล่วงหน้าได้สูงสุด 7 วัน · วันที่เป็นสีจางจองไม่ได้
+                </p>
+                @* hidden input เก็บค่าวันที่ที่เลือก *@
+                <input type="hidden" name="Date" id="inputDate" value="@Model.SelectedDate">
+                <button type="button" class="btn btn-dark w-100 mt-3" id="confirmStep1"
+                        @(Model.SelectedDate != null ? "" : "disabled")
+                        onclick="confirmStep(1)">
+                    ยืนยันวันที่ →
+                </button>
             </div>
         </div>
 
-        <!-- ── STEP 2: PEOPLE ── -->
-        <div class="step-item locked" id="step2">
+        <!-- ── STEP 2: PEOPLE (input number ล้วน ไม่ต้องใช้ JS) ── -->
+        <div class="step-item @(Model.SelectedDate != null ? "" : "locked")" id="step2">
             <div class="step-btn" onclick="toggleStep(2)">
-                <div class="step-num-badge" id="sn2">2</div>
+                <div class="step-num-badge">2</div>
                 <div class="flex-grow-1">
                     <div class="font-kanit fw-bold" style="font-size:.88rem;">จำนวนคน</div>
-                    <div class="step-val" id="sv2">เลือกวันก่อน</div>
+                    <div class="step-val">@Model.People คน</div>
                 </div>
                 <span class="step-chevron">▼</span>
             </div>
             <div class="step-body">
-                <div class="ppl-picker mb-2">
-                    <button class="ppl-btn" onclick="chgPpl(-1)">−</button>
-                    <div class="ppl-num" id="pplNum">2</div>
-                    <button class="ppl-btn" onclick="chgPpl(1)">+</button>
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <label class="form-label mb-0">จำนวนคน</label>
+                    <input type="number" class="form-control" name="People"
+                           value="@Model.People" min="1" max="20"
+                           style="width:100px;"
+                           onchange="updatePeopleStep(this.value)">
                 </div>
-                <p class="text-secondary mb-3" style="font-size:.78rem;">เพื่อกรองห้องที่รองรับจำนวนคนของคุณ</p>
-                <button class="btn btn-dark w-100" onclick="confirmStep(2)">ยืนยันจำนวนคน →</button>
+                <p class="text-secondary mb-3" style="font-size:.78rem;">
+                    เพื่อกรองห้องที่รองรับจำนวนคนของคุณ
+                </p>
+                <button type="button" class="btn btn-dark w-100" onclick="confirmStep(2)">
+                    ยืนยันจำนวนคน →
+                </button>
             </div>
         </div>
 
-        <!-- ── STEP 3: ROOM ── -->
-        <div class="step-item locked" id="step3">
+        <!-- ── STEP 3: ROOM (Razor foreach) ── -->
+        <div class="step-item @(Model.SelectedDate != null ? "" : "locked")" id="step3">
             <div class="step-btn" onclick="toggleStep(3)">
-                <div class="step-num-badge" id="sn3">3</div>
+                <div class="step-num-badge">3</div>
                 <div class="flex-grow-1">
                     <div class="font-kanit fw-bold" style="font-size:.88rem;">เลือกห้อง</div>
-                    <div class="step-val" id="sv3">เลือกจำนวนคนก่อน</div>
+                    <div class="step-val" id="sv3">
+                        @{
+                            var selRoom = Model.Rooms.FirstOrDefault(r => r.Id == Model.SelectedRoomId);
+                        }
+                        @(selRoom != null ? selRoom.RoomName : "เลือกห้องที่ต้องการ")
+                    </div>
                 </div>
                 <span class="step-chevron">▼</span>
             </div>
             <div class="step-body">
-                <div class="row g-2 mt-1" id="roomCards"></div>
-                <button class="btn btn-dark w-100 mt-3" id="confirmStep3" disabled onclick="confirmStep(3)">ยืนยันห้อง →</button>
+                <div class="row g-2 mt-1">
+                    @foreach (var r in Model.Rooms.Where(r => r.Size >= Model.People))
+                    {
+                        var isSelected = r.Id == Model.SelectedRoomId;
+                        <div class="col-12 col-md-6">
+                            <label style="cursor:pointer;width:100%;">
+                                <input type="radio" name="RoomId" value="@r.Id"
+                                       class="d-none"
+                                       @(isSelected ? "checked" : "")
+                                       onchange="pickRoom(@r.Id, '@r.RoomName')">
+                                <div class="room-card @(isSelected ? "selected" : "")">
+                                    @if (!string.IsNullOrEmpty(r.ImageUrl))
+                                    {
+                                        <img src="@r.ImageUrl"
+                                             style="width:100%;height:120px;object-fit:cover;border-radius:3px;margin-bottom:.75rem;">
+                                    }
+                                    <div style="font-family:'Kanit',sans-serif;font-size:.95rem;font-weight:700;">
+                                        @r.RoomName
+                                    </div>
+                                    <div style="font-size:.78rem;color:var(--ns-ink3);">≤@r.Size คน</div>
+                                    <div style="font-family:'Kanit',sans-serif;font-size:1.05rem;font-weight:900;margin-top:.3rem;">
+                                        ฿@r.PricePerHour.ToString("N0")
+                                        <span style="font-size:.7rem;font-weight:400;color:var(--ns-ink3);">/ชม.</span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    }
+                    @if (!Model.Rooms.Any(r => r.Size >= Model.People))
+                    {
+                        <div class="col-12 text-secondary small">ไม่มีห้องที่รองรับจำนวนคนนี้</div>
+                    }
+                </div>
+                <button type="button" class="btn btn-dark w-100 mt-3" id="confirmStep3"
+                        @(Model.SelectedRoomId != null ? "" : "disabled")
+                        onclick="confirmStep(3)">
+                    ยืนยันห้อง →
+                </button>
             </div>
         </div>
 
-        <!-- ── STEP 4: TIME ── -->
-        <div class="step-item locked" id="step4">
+        <!-- ── STEP 4: TIME (JS Timeline) ── -->
+        <div class="step-item @(Model.SelectedRoomId != null ? "" : "locked")" id="step4">
             <div class="step-btn" onclick="toggleStep(4)">
-                <div class="step-num-badge" id="sn4">4</div>
+                <div class="step-num-badge">4</div>
                 <div class="flex-grow-1">
                     <div class="font-kanit fw-bold" style="font-size:.88rem;">ช่วงเวลา — ลากเพื่อเลือก</div>
-                    <div class="step-val" id="sv4">เลือกห้องก่อน</div>
+                    <div class="step-val" id="sv4">
+                        @(Model.SelectedStart != null
+                            ? $"{Model.SelectedStart} – {Model.SelectedEnd}"
+                            : "เลือกช่วงเวลา")
+                    </div>
                 </div>
                 <span class="step-chevron">▼</span>
             </div>
             <div class="step-body">
-                <p class="text-secondary mb-3" style="font-size:.72rem;">ลากบน timeline เลือกช่วงเวลา · ทุก 15 นาที · ขั้นต่ำ 1 ชั่วโมง</p>
+                <p class="text-secondary mb-3" style="font-size:.72rem;">
+                    ลากบน timeline เลือกช่วงเวลา · ทุก 15 นาที · ขั้นต่ำ 1 ชั่วโมง
+                </p>
                 <div id="tlWrap"></div>
-                <div id="tlMinWarning" class="text-danger mt-2 small" style="display:none;">⚠ กรุณาเลือกอย่างน้อย 1 ชั่วโมง (4 ช่อง)</div>
-                <button class="btn btn-dark w-100 mt-3" id="confirmStep4" disabled onclick="confirmStep(4)">ยืนยันเวลา →</button>
+                <div id="tlMinWarning" class="text-danger mt-2 small d-none">
+                    ⚠ กรุณาเลือกอย่างน้อย 1 ชั่วโมง (4 ช่อง)
+                </div>
+                @* hidden inputs เก็บเวลา *@
+                <input type="hidden" name="StartTime" id="inputStart" value="@Model.SelectedStart">
+                <input type="hidden" name="EndTime"   id="inputEnd"   value="@Model.SelectedEnd">
+                <button type="button" class="btn btn-dark w-100 mt-3" id="confirmStep4"
+                        @(Model.SelectedStart != null ? "" : "disabled")
+                        onclick="submitBooking()">
+                    ดูสรุปและชำระเงิน →
+                </button>
             </div>
         </div>
 
-        <!-- ── STEP 5: REVIEW + PAY ── -->
-        <div class="step-item locked" id="step5">
-            <div class="step-btn" onclick="toggleStep(5)">
-                <div class="step-num-badge" id="sn5">5</div>
-                <div class="flex-grow-1">
-                    <div class="font-kanit fw-bold" style="font-size:.88rem;">ตรวจสอบและชำระเงิน</div>
-                    <div class="step-val" id="sv5">รอข้อมูลการจอง</div>
-                </div>
-                <span class="step-chevron">▼</span>
-            </div>
-            <div class="step-body">
-
-                <!-- Summary -->
-                <div class="sum-box p-3 mb-3">
-                    <div class="s-row"><span class="sl">วันที่</span><span id="sumDate">—</span></div>
-                    <div class="s-row"><span class="sl">เวลา</span><span id="sumTime">—</span></div>
-                    <div class="s-row"><span class="sl">ระยะเวลา</span><span id="sumDur">—</span></div>
-                    <div class="s-row"><span class="sl">จำนวนคน</span><span id="sumPpl">—</span></div>
-                    <div class="s-row"><span class="sl">ห้อง</span><span id="sumRoom">—</span></div>
-                    <div class="s-row" id="discountRow" style="display:none;">
-                        <span class="sl">ส่วนลด</span>
-                        <span id="sumDiscount" style="color:#2a7a44;font-weight:600;">—</span>
-                    </div>
-                    <div class="s-row stot"><span class="sl">ยอดรวม</span><span id="sumTotal">—</span></div>
-                </div>
-
-                <!-- Promo -->
-                <div class="input-group mb-2">
-                    <input type="text" class="form-control" id="promoInput" placeholder="โค้ดส่วนลด" style="text-transform:uppercase;">
-                    <button class="btn btn-dark" onclick="applyPromo()">ใช้โค้ด</button>
-                </div>
-                <div id="promoMsg" class="small mb-3"></div>
-
-                <hr style="border-color:var(--ns-border);">
-
-                <!-- Payment Methods -->
-                <p class="font-kanit fw-bold text-secondary mb-2" style="font-size:.68rem;letter-spacing:2px;text-transform:uppercase;">ช่องทางชำระเงิน</p>
-                <div class="row g-2 mb-3">
-                    <div class="col-4">
-                        <div class="pay-method-card active" id="pm-counter" onclick="selectPay('counter')">
-                            <div style="font-size:1.4rem;">🏦</div>
-                            <div class="font-kanit fw-bold" style="font-size:.8rem;">ชำระที่เคาน์เตอร์</div>
-                            <div class="text-secondary" style="font-size:.68rem;">จ่ายเมื่อมาถึงร้าน</div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="pay-method-card" id="pm-promptpay" onclick="selectPay('promptpay')">
-                            <div style="font-size:1.4rem;">📱</div>
-                            <div class="font-kanit fw-bold" style="font-size:.8rem;">PromptPay</div>
-                            <div class="text-secondary" style="font-size:.68rem;">สแกน QR โอนจ่ายเลย</div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="pay-method-card" id="pm-card" onclick="selectPay('card')">
-                            <div style="font-size:1.4rem;">💳</div>
-                            <div class="font-kanit fw-bold" style="font-size:.8rem;">บัตรเครดิต/เดบิต</div>
-                            <div class="text-secondary" style="font-size:.68rem;">Visa / Mastercard</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Counter -->
-                <div id="paySimCounter">
-                    <div class="alert alert-light border small text-secondary">ชำระเงินเมื่อมาถึงร้าน ไม่ต้องชำระล่วงหน้า</div>
-                    <button class="btn btn-dark w-100" onclick="doBook()">ยืนยันการจอง</button>
-                </div>
-
-                <!-- PromptPay -->
-                <div id="paySimPromptpay" style="display:none;">
-                    <div class="d-flex flex-column align-items-center gap-3 mb-3">
-                        <div class="qr-box">
-                            <div style="font-size:2.5rem;margin-bottom:.5rem;">▪▫▪▫▪<br>▫▪▫▪▫<br>▪▫▪▫▪</div>
-                            <div class="text-secondary small">QR PROMPTPAY (จำลอง)</div>
-                        </div>
-                        <div class="alert alert-light border small text-secondary w-100 mb-0">สแกน QR Code ด้วย Mobile Banking แล้วกด "ยืนยัน"</div>
-                    </div>
-                    <button class="btn btn-dark w-100 pay-btn-pp" onclick="simPay('promptpay')">✓ ยืนยันการชำระเงิน (จำลอง)</button>
-                </div>
-
-                <!-- Card -->
-                <div id="paySimCard" style="display:none;">
-                    <div class="row g-3 mb-3">
-                        <div class="col-md-5">
-                            <div class="card-preview">
-                                <div style="font-size:1.4rem;opacity:.7;">▬</div>
-                                <div style="font-size:.85rem;letter-spacing:3px;" id="cardNumDisplay">•••• •••• •••• ••••</div>
-                                <div class="d-flex justify-content-between" style="font-size:.72rem;">
-                                    <div>
-                                        <div style="font-size:.55rem;opacity:.6;">CARD HOLDER</div>
-                                        <div style="font-size:.8rem;font-weight:700;letter-spacing:1px;" id="cardNameDisplay">YOUR NAME</div>
-                                    </div>
-                                    <div>
-                                        <div style="font-size:.55rem;opacity:.6;">EXPIRES</div>
-                                        <div id="cardExpDisplay">MM/YY</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-7">
-                            <div class="vstack gap-2">
-                                <div>
-                                    <label class="form-label">หมายเลขบัตร</label>
-                                    <input type="text" class="form-control" id="cardNum" maxlength="19"
-                                           placeholder="0000 0000 0000 0000" oninput="fmtCard(this)">
-                                </div>
-                                <div>
-                                    <label class="form-label">ชื่อบนบัตร</label>
-                                    <input type="text" class="form-control" id="cardName" placeholder="FULL NAME"
-                                           oninput="document.getElementById('cardNameDisplay').textContent=this.value.toUpperCase()||'YOUR NAME'">
-                                </div>
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <label class="form-label">หมดอายุ</label>
-                                        <input type="text" class="form-control" id="cardExp" maxlength="5" placeholder="MM/YY" oninput="fmtExp(this)">
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label">CVV</label>
-                                        <input type="text" class="form-control" id="cardCvv" maxlength="3" placeholder="•••">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-dark w-100 pay-btn-card" onclick="simPay('card')">ชำระเงิน <span id="cardPayAmt"></span> (จำลอง)</button>
-                </div>
-
-            </div>
-        </div>
-
-    </div>
+    </form>
 </div>
+
+@section Scripts {
+<script>
+    const ROOMS_DATA = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Rooms));
+</script>
+<script src="~/js/Booking.js"></script>
+}
 }

@@ -9,14 +9,14 @@
 
         <ul class="nav auth-tabs d-flex" id="authTab" role="tablist">
             <li class="nav-item flex-fill">
-                <button class="nav-link @(activeTab == "login" ? "active" : "") w-100"
-                        id="btnLogin" data-bs-toggle="tab" data-bs-target="#loginPane">
+                <button class="nav-link @(activeTab == "login" ? "active" : "") w-100" id="btnLogin"
+                        data-bs-toggle="tab" data-bs-target="#loginPane">
                     เข้าสู่ระบบ
                 </button>
             </li>
             <li class="nav-item flex-fill">
-                <button class="nav-link @(activeTab == "register" ? "active" : "") w-100"
-                        id="btnRegister" data-bs-toggle="tab" data-bs-target="#registerPane">
+                <button class="nav-link @(activeTab == "register" ? "active" : "") w-100" id="btnRegister"
+                        data-bs-toggle="tab" data-bs-target="#registerPane">
                     สมัครสมาชิก
                 </button>
             </li>
@@ -34,18 +34,17 @@
                     <div class="alert alert-danger py-2 small mb-3">@TempData["LoginError"]</div>
                 }
 
-                <form id="loginForm" class="vstack gap-3"
-                      asp-controller="User" asp-action="Login" method="post">
+                <form id="loginForm" class="vstack gap-3" asp-controller="User" asp-action="Login" method="post">
                     @Html.AntiForgeryToken()
                     <div>
                         <label class="form-label">อีเมล</label>
-                        <input type="email" class="form-control" id="lEmail" value="demo@demo.damo"
-                               name="Email" placeholder="your@email.com">
+                        <input type="email" class="form-control" id="lEmail" value="demo@demo.damo" name="Email"
+                               placeholder="your@email.com">
                     </div>
                     <div>
                         <label class="form-label">รหัสผ่าน</label>
-                        <input type="password" class="form-control" id="lPass" value="123456"
-                               name="Password" placeholder="••••••••">
+                        <input type="password" class="form-control" id="lPass" value="123456" name="Password"
+                               placeholder="••••••••">
                     </div>
                     <button type="button" class="btn btn-dark w-100" onclick="doLogin()">
                         เข้าสู่ระบบ
@@ -55,7 +54,7 @@
                 <p class="text-center text-secondary small mt-3 mb-0">
                     ยังไม่มีบัญชี?
                     <a href="#" class="text-dark fw-semibold text-decoration-underline"
-                       onclick="document.getElementById('btnRegister').click()">
+                           onclick="document.getElementById('btnRegister').click()">
                         สมัครสมาชิก
                     </a>
                 </p>
@@ -71,31 +70,30 @@
                     <div class="alert alert-danger py-2 small mb-3">@TempData["RegisterError"]</div>
                 }
 
-                <form id="registerForm" class="vstack gap-3"
-                      asp-controller="User" asp-action="Register" method="post">
+                <form id="registerForm" class="vstack gap-3" asp-controller="User" asp-action="Register" method="post">
                     @Html.AntiForgeryToken()
                     <div>
                         <label class="form-label">ชื่อ-นามสกุล</label>
-                        <input type="text" class="form-control" id="rName" value="demo@demo.damo"
-                               name="Name" placeholder="ชื่อของคุณ">
+                        <input type="text" class="form-control" id="rName" value="demo@demo.damo" name="Name"
+                               placeholder="ชื่อของคุณ">
                         <div id="NameErr" class="text-danger small d-none"></div>
                     </div>
                     <div>
                         <label class="form-label">เบอร์โทรศัพท์</label>
-                        <input type="tel" class="form-control" id="rPhone" value="0123456789"
-                               name="Phone" placeholder="0812345678" maxlength="10">
+                        <input type="tel" class="form-control" id="rPhone" value="0123456789" name="Phone"
+                               placeholder="0812345678" maxlength="10">
                         <div id="PhoneErr" class="text-danger small d-none"></div>
                     </div>
                     <div>
                         <label class="form-label">อีเมล</label>
-                        <input type="email" class="form-control" id="rEmail" value="demo@demo.damo"
-                               name="Email" placeholder="your@email.com">
+                        <input type="email" class="form-control" id="rEmail" value="demo@demo.damo" name="Email"
+                               placeholder="your@email.com">
                         <div id="EmailErr" class="text-danger small d-none"></div>
                     </div>
                     <div>
                         <label class="form-label">รหัสผ่าน (อย่างน้อย 6 ตัว)</label>
-                        <input type="password" class="form-control" id="rPassword" value="123456"
-                               name="Password" placeholder="••••••••">
+                        <input type="password" class="form-control" id="rPassword" value="123456" name="Password"
+                               placeholder="••••••••">
                         <div id="PasswordErr" class="text-danger small d-none"></div>
                     </div>
                     <button type="button" class="btn btn-dark w-100" onclick="doRegister()">
@@ -106,7 +104,7 @@
                 <p class="text-center text-secondary small mt-3 mb-0">
                     มีบัญชีแล้ว?
                     <a href="#" class="text-dark fw-semibold text-decoration-underline"
-                       onclick="document.getElementById('btnLogin').click()">
+                           onclick="document.getElementById('btnLogin').click()">
                         เข้าสู่ระบบ
                     </a>
                 </p>
@@ -114,5 +112,8 @@
 
         </div>
     </div>
+    @section Scripts {
+        <script src="~/js/Login.js"></script>
+    }
 </div>
 

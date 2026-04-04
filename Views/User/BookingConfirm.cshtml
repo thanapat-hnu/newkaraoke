@@ -1,0 +1,172 @@
+@model newkaraoke.ViewModels.BookingConfirmViewModel
+@{
+    Layout = "_IndexLayout";
+    ViewBag.Title = "ยืนยันการจอง";
+}
+
+<div class="container" style="max-width:600px;padding:2.5rem 1.5rem 5rem;position:relative;z-index:1;">
+
+    <div class="sec-label">จองห้อง</div>
+    <h1 class="font-kanit fw-black mb-4" style="font-size:1.8rem;letter-spacing:-1px;">
+        ตรวจสอบและชำระเงิน
+    </h1>
+
+    <!-- สรุปการจอง -->
+    <div class="tc mb-3">
+        <div class="th"><div class="th-ttl">สรุปการจอง</div></div>
+        <div class="p-3">
+            <div class="s-row"><span class="sl">ห้อง</span><span style="font-weight:600;">@Model.RoomName</span></div>
+            <div class="s-row"><span class="sl">วันที่</span><span>@Model.DateDisplay</span></div>
+            <div class="s-row"><span class="sl">เวลา</span><span style="font-family:'Kanit',sans-serif;font-weight:600;">@Model.TimeDisplay</span></div>
+            <div class="s-row"><span class="sl">ระยะเวลา</span><span>@Model.Hours ชั่วโมง</span></div>
+            <div class="s-row"><span class="sl">จำนวนคน</span><span>@Model.People คน</span></div>
+            <div class="s-row"><span class="sl">ราคาปกติ</span><span>฿@Model.BasePrice.ToString("N0")</span></div>
+
+            @if (Model.PromoValid && Model.Discount > 0)
+            {
+                <div class="s-row">
+                    <span class="sl">ส่วนลด (@Model.PromoCode)</span>
+                    <span style="color:var(--ns-green);font-weight:600;">-฿@Model.Discount.ToString("N0")</span>
+                </div>
+            }
+
+            <div class="s-row stot">
+                <span class="sl">ยอดรวม</span>
+                <span style="font-family:'Kanit',sans-serif;font-size:1.2rem;font-weight:900;">
+                    ฿@Model.TotalPrice.ToString("N0")
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Promo Code -->
+    <div class="tc mb-3">
+        <div class="th"><div class="th-ttl">โค้ดส่วนลด</div></div>
+        <div class="p-3">
+            <form asp-action="ApplyPromo" method="post" class="d-flex gap-2">
+                @Html.AntiForgeryToken()
+                @* ส่ง booking data ไปด้วย *@
+                <input type="hidden" name="RoomId"    value="@Model.RoomId">
+                <input type="hidden" name="Date"      value="@Model.Date">
+                <input type="hidden" name="StartTime" value="@Model.StartTime">
+                <input type="hidden" name="EndTime"   value="@Model.EndTime">
+                <input type="hidden" name="People"    value="@Model.PeopleCount">
+                <input type="text" class="form-control" name="PromoCode"
+                       value="@Model.PromoCode"
+                       placeholder="กรอกโค้ดส่วนลด"
+                       style="text-transform:uppercase;">
+                <button type="submit" class="btn btn-dark px-4">ใช้โค้ด</button>
+            </form>
+
+            @if (Model.PromoMessage != null)
+            {
+                <div class="mt-2 small @(Model.PromoValid ? "text-success" : "text-danger")">
+                    @(Model.PromoValid ? "✓" : "✗") @Model.PromoMessage
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- วิธีชำระเงิน -->
+    <div class="tc mb-4">
+        <div class="th"><div class="th-ttl">ช่องทางชำระเงิน</div></div>
+        <div class="p-3">
+            <form asp-action="BookingPay" method="post">
+                @Html.AntiForgeryToken()
+                @* ส่ง booking data ทั้งหมดไปด้วย *@
+                <input type="hidden" name="RoomId"    value="@Model.RoomId">
+                <input type="hidden" name="Date"      value="@Model.Date">
+                <input type="hidden" name="StartTime" value="@Model.StartTime">
+                <input type="hidden" name="EndTime"   value="@Model.EndTime">
+                <input type="hidden" name="People"    value="@Model.PeopleCount">
+                <input type="hidden" name="PromoCode" value="@Model.PromoCode">
+
+                <div class="row g-2 mb-4">
+                    <div class="col-4">
+                        <label style="cursor:pointer;width:100%;">
+                            <input type="radio" name="PayMethod" value="counter"
+                                   class="d-none" checked
+                                   onchange="showPay('counter')">
+                            <div class="pay-method-card active" id="pm-counter">
+                                <div style="font-size:1.4rem;">🏦</div>
+                                <div class="font-kanit fw-bold" style="font-size:.8rem;">ชำระที่เคาน์เตอร์</div>
+                                <div class="text-secondary" style="font-size:.68rem;">จ่ายเมื่อมาถึงร้าน</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="col-4">
+                        <label style="cursor:pointer;width:100%;">
+                            <input type="radio" name="PayMethod" value="promptpay"
+                                   class="d-none"
+                                   onchange="showPay('promptpay')">
+                            <div class="pay-method-card" id="pm-promptpay">
+                                <div style="font-size:1.4rem;">📱</div>
+                                <div class="font-kanit fw-bold" style="font-size:.8rem;">PromptPay</div>
+                                <div class="text-secondary" style="font-size:.68rem;">สแกน QR โอนจ่ายเลย</div>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="col-4">
+                        <label style="cursor:pointer;width:100%;">
+                            <input type="radio" name="PayMethod" value="card"
+                                   class="d-none"
+                                   onchange="showPay('card')">
+                            <div class="pay-method-card" id="pm-card">
+                                <div style="font-size:1.4rem;">💳</div>
+                                <div class="font-kanit fw-bold" style="font-size:.8rem;">บัตรเครดิต/เดบิต</div>
+                                <div class="text-secondary" style="font-size:.68rem;">Visa / Mastercard</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Counter info -->
+                <div id="info-counter">
+                    <div class="alert alert-light border small text-secondary mb-3">
+                        ชำระเงินเมื่อมาถึงร้าน ไม่ต้องชำระล่วงหน้า การจองจะเป็น "รอดำเนินการ" จนกว่า Staff จะยืนยัน
+                    </div>
+                </div>
+
+                <!-- PromptPay info -->
+                <div id="info-promptpay" style="display:none;">
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="qr-box text-center">
+                            <div style="font-size:2.5rem;">▪▫▪▫▪<br>▫▪▫▪▫<br>▪▫▪▫▪</div>
+                            <div class="text-secondary small mt-1">QR PROMPTPAY (จำลอง)</div>
+                        </div>
+                    </div>
+                    <div class="alert alert-light border small text-secondary mb-3">
+                        สแกน QR Code แล้วกด "ยืนยัน" เพื่อจองและชำระเงิน
+                    </div>
+                </div>
+
+                <!-- Card info -->
+                <div id="info-card" style="display:none;">
+                    <div class="alert alert-light border small text-secondary mb-3">
+                        ระบบจำลองการชำระเงินผ่านบัตร กด "ยืนยัน" เพื่อดำเนินการต่อ
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-dark w-100">
+                    ยืนยันการจอง ฿@Model.TotalPrice.ToString("N0")
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <a asp-action="Booking" class="text-secondary text-decoration-none"
+       style="font-size:.82rem;">← กลับไปแก้ไขการจอง</a>
+
+</div>
+
+@section Scripts {
+<script>
+    function showPay(method) {
+        document.querySelectorAll('.pay-method-card').forEach(c => c.classList.remove('active'));
+        document.getElementById('pm-' + method).classList.add('active');
+        ['counter','promptpay','card'].forEach(m => {
+            document.getElementById('info-' + m).style.display = m === method ? '' : 'none';
+        });
+    }
+</script>
+}

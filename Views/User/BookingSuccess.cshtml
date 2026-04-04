@@ -1,0 +1,57 @@
+@model newkaraoke.ViewModels.BookingSuccessViewModel
+@{
+    Layout = "_IndexLayout";
+    ViewBag.Title = "จองสำเร็จ";
+}
+
+<div class="d-flex align-items-center justify-content-center" style="min-height:calc(100vh - 56px);">
+    <div class="text-center p-4" style="max-width:420px;width:100%;">
+
+        <div class="mx-auto mb-3"
+             style="width:64px;height:64px;border-radius:50%;background:var(--ns-sf);border:1px solid var(--ns-border-md);display:flex;align-items:center;justify-content:center;font-size:1.5rem;">
+            ✓
+        </div>
+
+        <h2 class="font-kanit fw-black mb-1">จองสำเร็จแล้ว</h2>
+        <p class="text-secondary mb-4" style="font-size:.85rem;">
+            @if (Model.Status == "confirmed")
+            {
+                <span>ชำระเงินเรียบร้อย พร้อมใช้งานได้เลย</span>
+            }
+            else
+            {
+                <span>รอการยืนยันจาก Staff</span>
+            }
+        </p>
+
+        <!-- Booking Code -->
+        <div class="mb-4">
+            <div class="text-secondary mb-1" style="font-size:.72rem;letter-spacing:2px;text-transform:uppercase;">รหัสการจอง</div>
+            <div style="font-family:'Kanit',sans-serif;font-size:2rem;font-weight:900;letter-spacing:6px;border-bottom:2px solid var(--ns-ink);padding-bottom:4px;display:inline-block;">
+                @Model.BookingCode
+            </div>
+        </div>
+
+        <!-- Detail -->
+        <div class="tc mb-4 text-start">
+            <div class="p-3">
+                <div class="s-row"><span class="sl">ห้อง</span><span>@Model.RoomName</span></div>
+                <div class="s-row"><span class="sl">วันที่</span><span>@Model.DateDisplay</span></div>
+                <div class="s-row"><span class="sl">เวลา</span><span>@Model.TimeDisplay</span></div>
+                <div class="s-row"><span class="sl">ชำระผ่าน</span><span>@Model.PayMethod</span></div>
+                <div class="s-row stot">
+                    <span class="sl">ยอดรวม</span>
+                    <span style="font-family:'Kanit',sans-serif;font-weight:900;">฿@Model.TotalPrice.ToString("N0")</span>
+                </div>
+            </div>
+        </div>
+
+        <p class="text-secondary small mb-4">กรุณาแสดงรหัสนี้ที่เคาน์เตอร์ในวันที่จอง</p>
+
+        <div class="d-flex gap-2 justify-content-center">
+            <a asp-action="Profile" class="btn btn-outline-secondary px-4">ดูโปรไฟล์</a>
+            <a asp-action="Booking" class="btn btn-dark px-4">จองอีกครั้ง</a>
+        </div>
+
+    </div>
+</div>

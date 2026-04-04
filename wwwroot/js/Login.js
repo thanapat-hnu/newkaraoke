@@ -160,6 +160,9 @@ function clearErrors() {
   });
 }
 
-document.getElementById('rPhone').addEventListener('keypress', e => {
-  if (!/[0-9]/.test(e.key)) e.preventDefault();
-});
+const phoneEl = document.getElementById('rPhone');
+if (phoneEl) {
+    phoneEl.addEventListener('keypress', e => {
+        if (!/[0-9]/.test(e.key)) e.preventDefault();
+    });
+}
