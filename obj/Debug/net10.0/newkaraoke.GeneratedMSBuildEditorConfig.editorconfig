@@ -19,169 +19,169 @@ build_property.TargetFrameworkIdentifier = .NETCoreApp
 build_property.TargetFrameworkVersion = v10.0
 build_property.RootNamespace = newkaraoke
 build_property.RootNamespace = newkaraoke
-build_property.ProjectDir = c:\Users\acer\Documents\newkaraoke\
+build_property.ProjectDir = C:\Users\acer\Documents\newkaraoke\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = c:\Users\acer\Documents\newkaraoke
+build_property.MSBuildProjectDirectory = C:\Users\acer\Documents\newkaraoke
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 10.0
 build_property.EnableCodeStyleSeverity = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Ceo/Customers.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Ceo/Customers.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2VvXEN1c3RvbWVycy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Ceo/Heatmap.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Ceo/Heatmap.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2VvXEhlYXRtYXAuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Ceo/Revenue.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Ceo/Revenue.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2VvXFJldmVudWUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Ceo/Rooms.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Ceo/Rooms.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2VvXFJvb21zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Home/Index.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/It/Logs.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/It/Logs.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcTG9ncy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/It/PromoCreate.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/It/PromoCreate.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW9DcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/It/PromoDelete.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/It/PromoDelete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW9EZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/It/PromoEdit.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/It/PromoEdit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW9FZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/It/Promotions.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/It/Promotions.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW90aW9ucy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/It/PromoToggle.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/It/PromoToggle.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcUHJvbW9Ub2dnbGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/It/UserCreate.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/It/UserCreate.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcVXNlckNyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/It/UserEdit.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/It/UserEdit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcVXNlckVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/It/Users.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/It/Users.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSXRcVXNlcnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Shared/Error.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Shared/_AdminLayout.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Shared/_AdminLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pbkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Shared/_BookingLayout.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Shared/_BookingLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Cb29raW5nTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Shared/_IndexLayout.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Shared/_IndexLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9JbmRleExheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Shared/_ITLayout.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Shared/_ITLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9JVExheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Shared/_Layout.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Shared/_LoginLayout.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Shared/_LoginLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpbkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Shared/_ProfileLayout.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Shared/_ProfileLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Qcm9maWxlTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Shared/_StaffLayout.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Shared/_StaffLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9TdGFmZkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/StaffAuth/Login.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/StaffAuth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZBdXRoXExvZ2luLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Staff/Bookings.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Staff/Bookings.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcQm9va2luZ3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Staff/Index.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Staff/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Staff/Promotions.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Staff/Promotions.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcUHJvbW90aW9ucy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Staff/RoomCreate.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Staff/RoomCreate.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcUm9vbUNyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Staff/RoomEdit.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Staff/RoomEdit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcUm9vbUVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/Staff/RoomManagement.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/Staff/RoomManagement.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RhZmZcUm9vbU1hbmFnZW1lbnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/User/Auth.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/User/Auth.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxBdXRoLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/User/Booking.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/User/Booking.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxCb29raW5nLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/User/BookingConfirm.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/User/BookingConfirm.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxCb29raW5nQ29uZmlybS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/User/BookingSuccess.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/User/BookingSuccess.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxCb29raW5nU3VjY2Vzcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/User/Index.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/User/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/User/Profile.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/User/Profile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxQcm9maWxlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/User/ProfileEdit.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/User/ProfileEdit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxQcm9maWxlRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/_ViewImports.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/acer/Documents/newkaraoke/Views/_ViewStart.cshtml]
+[C:/Users/acer/Documents/newkaraoke/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

@@ -111,8 +111,8 @@ function updatePeopleStep(val) {
 
 // ══ ROOM ═════════════════════════════════════════════════
 function pickRoom(id, name) {
-    document.querySelectorAll('.room-card').forEach(c => c.classList.remove('selected'));
-    event.currentTarget.closest('label').querySelector('.room-card').classList.add('selected');
+    document.querySelectorAll('.bk-room-card').forEach(c => c.classList.remove('bk-room-selected'));
+    event.currentTarget.closest('label').querySelector('.bk-room-card').classList.add('bk-room-selected');
     document.getElementById('sv3').textContent = name;
     document.getElementById('confirmStep3').disabled = false;
 }
@@ -144,10 +144,10 @@ async function renderTimeline() {
         } catch(e) { booked = []; }
     }
 
-    // สร้าง slots ทุก 30 นาที 14:00–02:00 (= 24 slots)
-    const SLOT_MIN = 30;
-    const TOTAL_SLOTS = 24; // 12 ชั่วโมง × 2
-    const slotLabels = [];
+    // สร้าง slots ทุก 1 ชั่วโมง 14:00–02:00 (= 12 slots) — พอดี 1 หน้าไม่ต้อง scroll
+    const SLOT_MIN    = 60;
+    const TOTAL_SLOTS = 12;
+    const slotLabels  = [];
     for (let i = 0; i < TOTAL_SLOTS; i++) {
         slotLabels.push(fromMin(i * SLOT_MIN));
     }
@@ -181,12 +181,12 @@ async function renderTimeline() {
 
             return `<div class="tl-slot${isBooked?' booked':''}"
                 data-i="${i}"
-                style="flex:0 0 auto;width:52px;height:44px;border-radius:3px;
+                style="flex:1;min-width:0;height:44px;border-radius:3px;
                 background:${bg};cursor:${cursor};opacity:${opacity};
-                position:relative;flex-shrink:0;transition:background .08s;">
-                ${showLabel ? `<span style="position:absolute;bottom:-17px;left:0;right:0;
-                    text-align:center;font-size:.58rem;color:var(--ns-ink3);
-                    white-space:nowrap;">${label}</span>` : ''}
+                position:relative;transition:background .08s;">
+                <span style="position:absolute;bottom:-17px;left:0;right:0;
+                    text-align:center;font-size:.65rem;color:var(--ns-ink3);
+                    white-space:nowrap;">${label}</span>
             </div>`;
         }).join('');
 
@@ -229,7 +229,7 @@ async function renderTimeline() {
         }
 
         const span     = mx - mn + 1;
-        const minSlots = 2; // ขั้นต่ำ 1 ชม. (2 slots × 30 นาที)
+        const minSlots = 1; // ขั้นต่ำ 1 ชม. (1 slot)
         const startLbl = slotLabels[mn];
         const endIdx   = mx + 1;
         const endLbl   = endIdx < TOTAL_SLOTS ? slotLabels[endIdx] : '02:00';
@@ -251,9 +251,8 @@ async function renderTimeline() {
 
     // สร้าง HTML wrapper แบบ scroll
     document.getElementById('tlWrap').innerHTML = `
-        <div style="overflow-x:auto;padding-bottom:24px;">
-            <div id="tlGrid" style="display:flex;gap:3px;min-width:max-content;user-select:none;"></div>
-        </div>`;
+        <div id="tlGrid" style="display:flex;gap:3px;user-select:none;"></div>
+        <div style="height:24px;"></div>`;
 
     renderSlots();
 }
