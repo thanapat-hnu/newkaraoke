@@ -40,8 +40,11 @@ public class UserController : Controller
     };
     private static string ToThaiDate(DateOnly d)
         => $"{d.Day} {ThaiMonths[d.Month - 1]} {d.Year + 543}";
-    private static string ToThaiDate(string isoDate)
-        => ToThaiDate(DateOnly.Parse(isoDate));
+    private static string ToThaiDate(string? isoDate)
+    {
+        if (string.IsNullOrEmpty(isoDate)) return "—";
+        return DateOnly.TryParse(isoDate, out var d) ? ToThaiDate(d) : isoDate;
+    }
     // คำนวณชั่วโมง รองรับ overnight
     private static double CalcHours(TimeOnly start, TimeOnly end)
         => end > start
@@ -302,8 +305,10 @@ public class UserController : Controller
         var room = _db.Rooms.Find(form.RoomId);
         if (room == null) return RedirectToAction("Booking");
 
-        var startTime = TimeOnly.Parse(form.StartTime);
-        var endTime   = TimeOnly.Parse(form.EndTime);
+        if (!TimeOnly.TryParse(form.StartTime, out var startTime) ||
+            !TimeOnly.TryParse(form.EndTime,   out var endTime))
+            return RedirectToAction("Booking");
+
         var hours     = CalcHours(startTime, endTime);
         var basePrice = room.PricePerHour * (decimal)hours;
 
