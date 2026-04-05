@@ -21,10 +21,10 @@ public class UserController : Controller
     // ── helpers ──────────────────────────────────────────
     private void SetSession(User user)
     {
-        HttpContext.Session.SetString("UserId", user.Id.ToString());
-        HttpContext.Session.SetString("UserName", user.Name);
+        HttpContext.Session.SetString("UserId",    user.Id.ToString());
+        HttpContext.Session.SetString("UserName",  user.Name);
         HttpContext.Session.SetString("UserEmail", user.Email);
-        HttpContext.Session.SetString("UserRole", user.Role);
+        HttpContext.Session.SetString("UserRole",  user.Role);
     }
 
     private bool IsCustomer()
@@ -32,6 +32,21 @@ public class UserController : Controller
 
     private int GetUserId()
         => int.Parse(HttpContext.Session.GetString("UserId") ?? "0");
+
+    // แปลงวันที่เป็นภาษาไทย เช่น "5 เมษายน 2569"
+    private static readonly string[] ThaiMonths = {
+        "มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน",
+        "กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"
+    };
+    private static string ToThaiDate(DateOnly d)
+        => $"{d.Day} {ThaiMonths[d.Month - 1]} {d.Year + 543}";
+    private static string ToThaiDate(string isoDate)
+        => ToThaiDate(DateOnly.Parse(isoDate));
+    // คำนวณชั่วโมง รองรับ overnight
+    private static double CalcHours(TimeOnly start, TimeOnly end)
+        => end > start
+            ? (end - start).TotalHours
+            : (new TimeSpan(24, 0, 0) - start.ToTimeSpan() + end.ToTimeSpan()).TotalHours;
 
     // ══ AUTH ═════════════════════════════════════════════
 
@@ -288,23 +303,23 @@ public class UserController : Controller
         if (room == null) return RedirectToAction("Booking");
 
         var startTime = TimeOnly.Parse(form.StartTime);
-        var endTime = TimeOnly.Parse(form.EndTime);
-        var hours = (endTime - startTime).TotalHours;
+        var endTime   = TimeOnly.Parse(form.EndTime);
+        var hours     = CalcHours(startTime, endTime);
         var basePrice = room.PricePerHour * (decimal)hours;
 
         return View("BookingConfirm", new BookingConfirmViewModel
         {
-            RoomName = room.RoomName,
-            DateDisplay = DateTime.Parse(form.Date).ToString("dd MMMM yyyy"),
+            RoomName    = room.RoomName,
+            DateDisplay = ToThaiDate(form.Date),
             TimeDisplay = $"{form.StartTime} – {form.EndTime}",
-            Hours = hours,
-            People = form.People,
-            BasePrice = basePrice,
-            TotalPrice = basePrice,
-            RoomId = form.RoomId,
-            Date = form.Date,
-            StartTime = form.StartTime,
-            EndTime = form.EndTime,
+            Hours       = hours,
+            People      = form.People,
+            BasePrice   = basePrice,
+            TotalPrice  = basePrice,
+            RoomId      = form.RoomId,
+            Date        = form.Date,
+            StartTime   = form.StartTime,
+            EndTime     = form.EndTime,
             PeopleCount = form.People
         });
     }
@@ -319,8 +334,8 @@ public class UserController : Controller
         if (room == null) return RedirectToAction("Booking");
 
         var startTime = TimeOnly.Parse(form.StartTime);
-        var endTime = TimeOnly.Parse(form.EndTime);
-        var hours = (endTime - startTime).TotalHours;
+        var endTime   = TimeOnly.Parse(form.EndTime);
+        var hours     = CalcHours(startTime, endTime);
         var basePrice = room.PricePerHour * (decimal)hours;
         var total = basePrice;
         var discount = 0m;
@@ -358,7 +373,7 @@ public class UserController : Controller
         return View("BookingConfirm", new BookingConfirmViewModel
         {
             RoomName = room.RoomName,
-            DateDisplay = DateTime.Parse(form.Date).ToString("dd MMMM yyyy"),
+            DateDisplay = ToThaiDate(form.Date),
             TimeDisplay = $"{form.StartTime} – {form.EndTime}",
             Hours = hours,
             People = form.People,
@@ -467,7 +482,7 @@ public class UserController : Controller
         {
             BookingCode = code,
             RoomName = room.RoomName,
-            DateDisplay = bookingDate.ToString("dd MMMM yyyy"),
+            DateDisplay = ToThaiDate(bookingDate),
             TimeDisplay = $"{startTime:HH:mm} – {endTime:HH:mm}",
             TotalPrice = Math.Round(totalPrice, 2),
             PayMethod = payLabel,

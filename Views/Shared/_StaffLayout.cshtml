@@ -15,6 +15,7 @@
     <!-- SIDEBAR -->
     <div id="sb">
         <div class="sb-logo">
+            <button class="sb-mobile-toggle" onclick="toggleSidebar()">☰</button>
             <div class="sb-name">Neon Star<span class="sb-sup">KARAOKE</span></div>
             <div class="sb-role-badge role-@Context.Session.GetString("UserRole")">
                 @Context.Session.GetString("UserRole")
@@ -93,5 +94,17 @@
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+    function toggleSidebar() {
+        document.getElementById('sb').classList.toggle('sb-open');
+    }
+    // ปิด sidebar เมื่อคลิก nav item บน mobile
+    document.querySelectorAll('.sb-item').forEach(el => {
+        el.addEventListener('click', () => {
+            if (window.innerWidth <= 768)
+                document.getElementById('sb').classList.remove('sb-open');
+        });
+    });
+    </script>
 </body>
 </html>

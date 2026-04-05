@@ -47,6 +47,35 @@ body::before {
 .nav-link { font-size: .82rem; color: var(--ns-ink3) !important; padding: 0 !important; }
 .nav-link:hover, .nav-link.active { color: var(--ns-ink) !important; font-weight: 600; }
 
+/* Burger icon */
+.navbar-toggler { padding: 4px 6px; }
+.navbar-toggler:focus { box-shadow: none !important; }
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(28,28,26,0.75)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+  width: 22px; height: 22px;
+}
+
+/* Mobile dropdown menu */
+@media (max-width: 767px) {
+  .navbar { height: auto; min-height: 56px; }
+  #mainNav {
+    border-top: 1px solid var(--ns-border);
+    margin-top: 8px;
+    padding: .5rem 0 .75rem;
+    background: rgba(242,240,235,.98);
+  }
+  #mainNav .navbar-nav { gap: 2px !important; }
+  #mainNav .nav-link {
+    padding: .55rem .5rem !important;
+    border-radius: 4px;
+    font-size: .9rem !important;
+  }
+  #mainNav .nav-link:hover { background: var(--ns-bg2); }
+  #mainNav .btn { width: 100%; text-align: center; margin-top: 4px; }
+  #mainNav form { width: 100%; }
+  #mainNav form .btn { width: 100%; }
+}
+
 /* Buttons — ใช้ .btn-dark และ .btn-outline-secondary */
 .btn-dark {
   background-color: var(--ns-ink) !important;

@@ -18,7 +18,7 @@
             <div class="s-row"><span class="sl">ห้อง</span><span style="font-weight:600;">@Model.RoomName</span></div>
             <div class="s-row"><span class="sl">วันที่</span><span>@Model.DateDisplay</span></div>
             <div class="s-row"><span class="sl">เวลา</span><span style="font-family:'Kanit',sans-serif;font-weight:600;">@Model.TimeDisplay</span></div>
-            <div class="s-row"><span class="sl">ระยะเวลา</span><span>@Model.Hours ชั่วโมง</span></div>
+            <div class="s-row"><span class="sl">ระยะเวลา</span><span>@(Model.Hours % 1 == 0 ? ((int)Model.Hours).ToString() : Model.Hours.ToString("0.#")) ชั่วโมง</span></div>
             <div class="s-row"><span class="sl">จำนวนคน</span><span>@Model.People คน</span></div>
             <div class="s-row"><span class="sl">ราคาปกติ</span><span>฿@Model.BasePrice.ToString("N0")</span></div>
 

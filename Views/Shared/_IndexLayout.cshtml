@@ -231,38 +231,49 @@
     <!-- ══ NAVBAR (Bootstrap) ══════════════════════════════════ -->
 <nav class="navbar navbar-expand-md sticky-top">
   <div class="container-fluid px-4">
-    <a class="navbar-brand" href="index">Neon Star<sup>Karaoke</sup></a>
+    <a class="navbar-brand" href="/user/index">Neon Star<sup>Karaoke</sup></a>
 
-    <!-- Mobile toggle -->
-    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+    @* Burger — Bootstrap วาง right อัตโนมัติ ms-auto ใช้งานได้เลย *@
+    <button class="navbar-toggler border-0 ms-auto" type="button"
+            data-bs-toggle="collapse" data-bs-target="#mainNav"
+            aria-controls="mainNav" aria-expanded="false">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav ms-auto align-items-md-center gap-md-3 gap-2 py-2 py-md-0">
+      <ul class="navbar-nav ms-auto align-items-md-center gap-md-3 gap-2 py-3 py-md-0">
         @{
-    var currentPath = Context.Request.Path.Value?.ToLower();
+            var currentPath = Context.Request.Path.Value?.ToLower();
         }
-        <li class="nav-item"><a class="nav-link @(currentPath == "/user/index" || currentPath == "/" ? "active" : "")" href="/user/index">หน้าแรก</a></li>
-        <li class="nav-item"><a class="nav-link @(currentPath == "/user/booking" ? "active" : "")" href="/user/booking">จองห้อง</a></li>
-      @if(Context.Session.GetString("UserId") != null){
-<li class="nav-item"><a class="nav-link @(currentPath == "/user/profile" ? "active" : "")" href="/user/profile">@Context.Session.GetString("UserName")</a></li>
-}else{
-<li class="nav-item"><a class="nav-link @(currentPath == "/user/profile" ? "active" : "")" href="/user/profile">โปรไฟล์</a></li>
-}
-
-
-        @if (Context.Session.GetString("UserId") != null){
-    <li class="nav-item">
-        <a href="/user/Logout" class="btn btn-outline-secondary btn-sm px-3">ออกจากระบบ</a>
-    </li>
-        }else{
-        <li class="nav-item ms-md-2">
-          <a href="Auth" class="btn btn-outline-secondary btn-sm px-3">เข้าสู่ระบบ</a>
+        <li class="nav-item">
+            <a class="nav-link @(currentPath == "/user/index" || currentPath == "/" ? "active" : "")"
+               href="/user/index">หน้าแรก</a>
         </li>
         <li class="nav-item">
-          <a href="booking" class="btn btn-dark btn-sm px-3">จองเลย</a>
+            <a class="nav-link @(currentPath == "/user/booking" ? "active" : "")"
+               href="/user/booking">จองห้อง</a>
         </li>
+        @if (Context.Session.GetString("UserId") != null)
+        {
+            <li class="nav-item">
+                <a class="nav-link @(currentPath == "/user/profile" ? "active" : "")"
+                   href="/user/profile">@Context.Session.GetString("UserName")</a>
+            </li>
+            <li class="nav-item">
+                <form asp-controller="User" asp-action="Logout" method="post" style="margin:0;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-outline-secondary btn-sm px-3">ออกจากระบบ</button>
+                </form>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item ms-md-2">
+                <a href="/user/auth" class="btn btn-outline-secondary btn-sm px-3">เข้าสู่ระบบ</a>
+            </li>
+            <li class="nav-item">
+                <a href="/user/booking" class="btn btn-dark btn-sm px-3">จองเลย</a>
+            </li>
         }
       </ul>
     </div>
