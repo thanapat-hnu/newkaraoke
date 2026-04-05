@@ -1,4 +1,4 @@
-@* Views/Shared/_AdminLayout.cshtml *@
+@* Views/Shared/_AdminLayout.cshtml — CEO / Admin *@
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -15,39 +15,35 @@
     <div id="sb">
         <div class="sb-logo">
             <div class="sb-name">Neon Star<span class="sb-sup">KARAOKE</span></div>
-            <div class="sb-role-badge role-admin">Admin</div>
+            <div class="sb-role-badge role-admin">CEO</div>
         </div>
 
         <nav class="sb-nav">
             <div class="sb-sec">Analytics</div>
-            <a class="sb-item @(ViewBag.ActiveNav == "dashboard" ? "active" : "")"
-               asp-controller="Admin" asp-action="Index">
-                <span class="sb-icon">◈</span> Dashboard
-            </a>
             <a class="sb-item @(ViewBag.ActiveNav == "revenue"   ? "active" : "")"
-               asp-controller="Admin" asp-action="Revenue">
+               asp-controller="Ceo" asp-action="Revenue">
                 <span class="sb-icon">◎</span> รายรับ
             </a>
             <a class="sb-item @(ViewBag.ActiveNav == "rooms"     ? "active" : "")"
-               asp-controller="Admin" asp-action="Rooms">
+               asp-controller="Ceo" asp-action="Rooms">
                 <span class="sb-icon">◫</span> ห้อง
             </a>
             <a class="sb-item @(ViewBag.ActiveNav == "heatmap"   ? "active" : "")"
-               asp-controller="Admin" asp-action="Heatmap">
+               asp-controller="Ceo" asp-action="Heatmap">
                 <span class="sb-icon">▦</span> Heatmap
             </a>
             <a class="sb-item @(ViewBag.ActiveNav == "customers" ? "active" : "")"
-               asp-controller="Admin" asp-action="Customers">
+               asp-controller="Ceo" asp-action="Customers">
                 <span class="sb-icon">◷</span> ลูกค้า
             </a>
         </nav>
 
         <div class="sb-footer">
             <div class="sb-user">
-                <strong>@User.Identity?.Name</strong><br>
+                <strong>@Context.Session.GetString("UserName")</strong><br>
                 <span style="font-size:.65rem;">Administrator</span>
             </div>
-            <form asp-controller="Account" asp-action="Logout" method="post">
+            <form asp-controller="StaffAuth" asp-action="Logout" method="post">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="sb-logout">ออกจากระบบ</button>
             </form>
@@ -57,47 +53,29 @@
     <div id="main" class="flex-grow-1 overflow-x-hidden">
         <div class="topbar d-flex align-items-center justify-content-between px-3">
             <div class="topbar-title">@ViewBag.Title</div>
-            @* Date range filter — Admin ใช้บ่อยจึงใส่ใน layout *@
             <div class="d-flex align-items-center gap-2">
-                <div class="d-flex gap-1" id="drWrap">
-                    <a asp-controller="Admin" asp-action="@ViewBag.CurrentAction"
+                <div class="d-flex gap-1">
+                    <a asp-controller="Ceo" asp-action="@ViewBag.CurrentAction"
                        asp-route-range="7"
-                       class="dr-btn @(ViewBag.Range == 7   ? "active" : "")">7 วัน</a>
-                    <a asp-controller="Admin" asp-action="@ViewBag.CurrentAction"
+                       class="dr-btn @(ViewBag.Range == 7  ? "active" : "")">7 วัน</a>
+                    <a asp-controller="Ceo" asp-action="@ViewBag.CurrentAction"
                        asp-route-range="30"
-                       class="dr-btn @(ViewBag.Range == 30  ? "active" : "")">30 วัน</a>
-                    <a asp-controller="Admin" asp-action="@ViewBag.CurrentAction"
+                       class="dr-btn @(ViewBag.Range == 30 ? "active" : "")">30 วัน</a>
+                    <a asp-controller="Ceo" asp-action="@ViewBag.CurrentAction"
                        asp-route-range="90"
-                       class="dr-btn @(ViewBag.Range == 90  ? "active" : "")">90 วัน</a>
-                    <a asp-controller="Admin" asp-action="@ViewBag.CurrentAction"
+                       class="dr-btn @(ViewBag.Range == 90 ? "active" : "")">90 วัน</a>
+                    <a asp-controller="Ceo" asp-action="@ViewBag.CurrentAction"
                        asp-route-range="0"
-                       class="dr-btn @(ViewBag.Range == 0   ? "active" : "")">ทั้งหมด</a>
+                       class="dr-btn @(ViewBag.Range == 0  ? "active" : "")">ทั้งหมด</a>
                 </div>
-                <a href="/" style="font-size:.75rem;color:var(--ns-ink3);text-decoration:none;padding:3px 7px;">หน้าลูกค้า ↗</a>
+                <a href="/User/Index" style="font-size:.75rem;color:var(--ns-ink3);text-decoration:none;padding:3px 7px;">หน้าลูกค้า ↗</a>
             </div>
         </div>
         @RenderBody()
     </div>
 
-    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
-        <div id="liveToast" class="toast text-white border-0" role="alert">
-            <div class="d-flex">
-                <div class="toast-body fw-semibold" id="toastMsg"
-                     style="font-family:'Kanit',sans-serif;font-size:.8rem;"></div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                        data-bs-dismiss="toast"></button>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-    <script>
-        function showToast(msg) {
-            document.getElementById('toastMsg').textContent = msg;
-            new bootstrap.Toast(document.getElementById('liveToast'), { delay: 3000 }).show();
-        }
-    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

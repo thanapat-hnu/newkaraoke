@@ -7,17 +7,27 @@
 
 <div class="p-4" style="position:relative;z-index:1;">
 
-    <div class="pg-ttl">จัดการผู้ใช้งานระบบ</div>
-    <p class="pg-sub mb-3">เพิ่ม แก้ไข และกำหนดสิทธิ์ผู้ใช้งาน Back-office</p>
-
-    <div class="notice info mb-3">
-        ผู้ใช้ในหน้านี้คือบัญชี Back-office (admin / it / staff) ไม่ใช่ลูกค้าหน้าเว็บ
-    </div>
+    <div class="pg-ttl">จัดการผู้ใช้ระบบ</div>
+    <p class="pg-sub mb-3">เพิ่ม แก้ไข และกำหนดสิทธิ์ผู้ใช้งาน</p>
 
     <div class="tc mb-3">
         <div class="th">
-            <div class="th-ttl">บัญชีระบบ (@Model.Count() บัญชี)</div>
-            <a asp-action="UserCreate" class="ab" style="text-decoration:none;">+ เพิ่มผู้ใช้</a>
+            <div class="th-ttl">ผู้ใช้ทั้งหมด (@ViewBag.Total คน)</div>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <form method="get" asp-action="Users" class="d-flex gap-2">
+                    <select class="ti" name="role" style="width:130px;" onchange="this.form.submit()">
+                        <option value="">ทุก Role</option>
+                        @foreach (var r in new[] { "customer", "staff", "it", "admin" })
+                        {
+                            if (r == (ViewBag.RoleFilter as string ?? ""))
+                            { <option value="@r" selected>@r</option> }
+                            else
+                            { <option value="@r">@r</option> }
+                        }
+                    </select>
+                </form>
+                <a asp-action="UserCreate" class="ab" style="text-decoration:none;">+ เพิ่มผู้ใช้</a>
+            </div>
         </div>
         <div class="table-responsive">
             <table class="tbl">
@@ -37,9 +47,7 @@
                         <tr>
                             <td style="font-weight:600;">@u.Name</td>
                             <td style="font-size:.78rem;color:var(--ns-ink3);">@u.Email</td>
-                            <td style="font-size:.78rem;color:var(--ns-ink3);">
-                                @(u.Phone ?? "—")
-                            </td>
+                            <td style="font-size:.78rem;color:var(--ns-ink3);">@(u.Phone ?? "—")</td>
                             <td>
                                 <span class="role-tag rt-@u.Role.ToLower()">@u.Role</span>
                             </td>
@@ -48,8 +56,7 @@
                             </td>
                             <td style="white-space:nowrap;">
                                 <a asp-action="UserEdit" asp-route-id="@u.Id"
-                                   class="ab sm"
-                                   style="font-size:.62rem;padding:4px 8px;text-decoration:none;">
+                                   class="ab sm" style="font-size:.62rem;padding:4px 8px;text-decoration:none;">
                                     แก้ไข
                                 </a>
                                 @if (u.Email != User.Identity!.Name)
@@ -60,9 +67,7 @@
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="id" value="@u.Id" />
                                         <button type="submit" class="ab danger"
-                                                style="font-size:.62rem;padding:4px 8px;">
-                                            ลบ
-                                        </button>
+                                                style="font-size:.62rem;padding:4px 8px;">ลบ</button>
                                     </form>
                                 }
                             </td>
@@ -71,9 +76,25 @@
                 </tbody>
             </table>
         </div>
+
+        @if ((int)ViewBag.TotalPages > 1)
+        {
+            <div class="px-3 py-2 d-flex gap-2 align-items-center flex-wrap">
+                @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
+                {
+                    <a asp-action="Users" asp-route-page="@i" asp-route-role="@ViewBag.RoleFilter"
+                       style="text-decoration:none;padding:4px 10px;border-radius:3px;font-size:.8rem;
+                       @(i == (int)ViewBag.Page
+                           ? "background:var(--ns-ink);color:var(--ns-bg);"
+                           : "border:1px solid var(--ns-border-md);color:var(--ns-ink);")">
+                        @i
+                    </a>
+                }
+                <span class="text-secondary small ms-2">หน้า @ViewBag.Page / @ViewBag.TotalPages</span>
+            </div>
+        }
     </div>
 
-    <!-- Role Permission Table -->
     <div class="cc">
         <div class="cc-ttl">สิทธิ์การเข้าถึงตาม Role</div>
         <div class="table-responsive">

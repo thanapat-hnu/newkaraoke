@@ -1,3 +1,103 @@
 @{
     Layout = "_AdminLayout";
+    ViewBag.Title = "วิเคราะห์ห้อง";
+    var stats     = ViewBag.RoomStats as dynamic;
+    var roomNames = (List<string>)ViewBag.RoomNames2;
+    var roomOccs  = (List<decimal>)ViewBag.RoomOccs;
+    var roomRevs  = (List<decimal>)ViewBag.RoomRevs2;
+    var roomBkCnt = (List<int>)ViewBag.RoomBkCnt;
+}
+
+<div class="p-4" style="position:relative;z-index:1;">
+
+    <div class="pg-ttl">วิเคราะห์ห้อง</div>
+    <p class="pg-sub mb-4">อัตราการใช้งานและรายรับของแต่ละห้อง</p>
+
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-lg-6">
+            <div class="cc h-100">
+                <div class="cc-ttl">Occupancy Rate (%)</div>
+                <div style="height:220px;"><canvas id="cOcc"></canvas></div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="cc h-100">
+                <div class="cc-ttl">รายรับตามห้อง</div>
+                <div style="height:220px;"><canvas id="cRev"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tc">
+        <div class="th"><div class="th-ttl">สรุปรายห้อง</div></div>
+        <div class="table-responsive">
+            <table class="tbl">
+                <thead>
+                    <tr><th>ห้อง</th><th>รับได้</th><th>ราคา/ชม.</th><th>สถานะ</th><th>การจอง</th><th>ชม.ที่ใช้</th><th>รายรับ</th><th>Occupancy</th></tr>
+                </thead>
+                <tbody>
+                @foreach (var r in ViewBag.RoomStats)
+                {
+                    decimal rPrice = (decimal)r.PricePerHour;
+                    decimal rRev   = (decimal)r.Revenue;
+                    decimal rOcc   = (decimal)r.Occupancy;
+                    <tr>
+                        <td style="font-weight:600;">@r.RoomName</td>
+                        <td>≤@r.Size คน</td>
+                        <td style="font-family:'Kanit',sans-serif;">฿@rPrice.ToString("N0")</td>
+                        <td>
+                            @if ((bool)r.IsActive)
+                            { <span class="tag tag-c">เปิด</span> }
+                            else
+                            { <span class="tag tag-x">ปิด</span> }
+                        </td>
+                        <td style="font-family:'Kanit',sans-serif;">@r.BookingCount</td>
+                        <td style="font-family:'Kanit',sans-serif;">@r.UsedHours ชม.</td>
+                        <td style="font-family:'Kanit',sans-serif;font-weight:700;">฿@rRev.ToString("N0")</td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div style="flex:1;height:5px;background:var(--ns-bg3);border-radius:3px;overflow:hidden;min-width:60px;">
+                                    <div style="height:100%;background:var(--ns-ink);width:@rOcc%;"></div>
+                                </div>
+                                <span style="font-size:.75rem;font-family:'Kanit',sans-serif;">@rOcc%</span>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+<script>
+const COLORS = ['#1C1C1A','#3A3A36','#6B6B65','#9B9990','#BDBAB2','#DEDAD2'];
+const roomNames = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(roomNames));
+const roomOccs  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(roomOccs));
+const roomRevs  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(roomRevs));
+
+new Chart(document.getElementById('cOcc'), {
+    type: 'bar',
+    data: { labels: roomNames, datasets: [{ data: roomOccs,
+        backgroundColor: COLORS.slice(0, roomNames.length), borderRadius:3, borderSkipped:false }] },
+    options: { responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{ x:{grid:{display:false},ticks:{font:{size:9}}},
+                 y:{max:100,grid:{color:'rgba(28,28,26,.06)'},border:{display:false},
+                    ticks:{callback:v=>v+'%',font:{size:9}}} } }
+});
+
+new Chart(document.getElementById('cRev'), {
+    type: 'bar',
+    data: { labels: roomNames, datasets: [{ data: roomRevs,
+        backgroundColor: COLORS.slice(0, roomNames.length), borderRadius:3, borderSkipped:false }] },
+    options: { responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{ x:{grid:{display:false},ticks:{font:{size:9}}},
+                 y:{grid:{color:'rgba(28,28,26,.06)'},border:{display:false},
+                    ticks:{callback:v=>'฿'+v.toLocaleString(),font:{size:9}}} } }
+});
+</script>
 }

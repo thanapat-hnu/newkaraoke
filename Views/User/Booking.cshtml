@@ -109,10 +109,10 @@ else
             </div>
             <div class="step-body">
                 <div class="row g-2 mt-1">
-                    @foreach (var r in Model.Rooms.Where(r => r.Size >= Model.People))
+                    @foreach (var r in Model.Rooms)
                     {
                         var isSelected = r.Id == Model.SelectedRoomId;
-                        <div class="col-12 col-md-6">
+                        <div class="col-12 col-md-6" data-room-size="@r.Size">
                             <label style="cursor:pointer;width:100%;">
                                 <input type="radio" name="RoomId" value="@r.Id"
                                        class="d-none"
@@ -136,10 +136,7 @@ else
                             </label>
                         </div>
                     }
-                    @if (!Model.Rooms.Any(r => r.Size >= Model.People))
-                    {
-                        <div class="col-12 text-secondary small">ไม่มีห้องที่รองรับจำนวนคนนี้</div>
-                    }
+                    <div id="noRoomMsg" class="col-12 text-secondary small" style="display:none;">ไม่มีห้องที่รองรับจำนวนคนนี้</div>
                 </div>
                 <button type="button" class="btn btn-dark w-100 mt-3" id="confirmStep3"
                         @(Model.SelectedRoomId != null ? "" : "disabled")

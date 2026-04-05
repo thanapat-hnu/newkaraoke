@@ -1,7 +1,17 @@
-﻿// ══ CALENDAR ═════════════════════════════════════════════
+// ══ CALENDAR ═════════════════════════════════════════════
 let calDate = new Date();
 const M_TH  = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 let selDate = null;
+let fullyBookedDates = new Set();
+
+async function loadFullyBookedDates() {
+    try {
+        const res  = await fetch('/User/GetFullyBookedDates');
+        const data = await res.json();
+        fullyBookedDates = new Set(data);
+        renderCal();
+    } catch(e) {}
+}
 
 function renderCal() {
     const today = new Date(); today.setHours(0,0,0,0);
@@ -21,15 +31,27 @@ function renderCal() {
     for (let d = 1; d <= last.getDate(); d++) {
         const dt = new Date(calDate.getFullYear(), calDate.getMonth(), d);
         dt.setHours(0,0,0,0);
-        const iso = dt.toISOString().split('T')[0];
-        const ok  = dt >= today && dt <= max;
-        const act = selDate === iso;
+        const iso    = dt.toISOString().split('T')[0];
+        const inRange = dt >= today && dt <= max;
+        const isFull  = fullyBookedDates.has(iso);
+        const ok      = inRange && !isFull;
+        const act     = selDate === iso;
+
+        let bg    = act ? 'var(--ns-ink)' : 'transparent';
+        let color = act ? 'var(--ns-bg)'  : ok ? 'var(--ns-ink)' : 'var(--ns-bg3)';
+        let extra = '';
+
+        if (isFull && inRange) {
+            bg    = 'rgba(220,53,69,.12)';
+            color = 'rgba(220,53,69,.7)';
+            extra = 'text-decoration:line-through;';
+        }
+
         html += `<div onclick="${ok ? `pickDate('${iso}')` : ''}"
+            title="${isFull && inRange ? 'ห้องเต็มทุกห้อง' : ''}"
             style="padding:6px 2px;border-radius:3px;cursor:${ok?'pointer':'default'};
             font-size:.82rem;font-family:'Kanit',sans-serif;font-weight:${act?700:500};
-            background:${act?'var(--ns-ink)':'transparent'};
-            color:${act?'var(--ns-bg)':ok?'var(--ns-ink)':'var(--ns-bg3)'};
-            transition:background .15s;">${d}</div>`;
+            background:${bg};color:${color};${extra}transition:background .15s;">${d}</div>`;
     }
     html += '</div>';
     document.getElementById('calGrid').innerHTML = html;
@@ -66,13 +88,25 @@ function confirmStep(n) {
 
 // ══ PEOPLE ═══════════════════════════════════════════════
 function updatePeopleStep(val) {
-    // filter room cards ตาม people ที่เลือก
-    document.querySelectorAll('input[name="RoomId"]').forEach(radio => {
-        const roomId = parseInt(radio.value);
-        const room   = ROOMS_DATA.find(r => r.id === roomId);
-        const col    = radio.closest('.col-12');
-        if (col) col.style.display = room && room.size >= parseInt(val) ? '' : 'none';
+    const n = parseInt(val) || 1;
+    let anyVisible = false;
+
+    document.querySelectorAll('[data-room-size]').forEach(col => {
+        const size = parseInt(col.dataset.roomSize);
+        const show = size >= n;
+        col.style.display = show ? '' : 'none';
+
+        const radio = col.querySelector('input[name="RoomId"]');
+        if (radio && !show && radio.checked) {
+            radio.checked = false;
+            document.getElementById('sv3').textContent = 'เลือกห้องที่ต้องการ';
+            document.getElementById('confirmStep3').disabled = true;
+        }
+        if (show) anyVisible = true;
     });
+
+    const noRoom = document.getElementById('noRoomMsg');
+    if (noRoom) noRoom.style.display = anyVisible ? 'none' : '';
 }
 
 // ══ ROOM ═════════════════════════════════════════════════
@@ -84,50 +118,144 @@ function pickRoom(id, name) {
 }
 
 // ══ TIMELINE ═════════════════════════════════════════════
-function renderTimeline() {
-    const slots = [];
-    for (let h = 14; h < 26; h++)
-        for (let m = 0; m < 60; m += 15)
-            slots.push(String(h%24).padStart(2,'0') + ':' + String(m).padStart(2,'0'));
+// แปลงเวลา HH:mm เป็นนาทีนับจาก 14:00 (รองรับข้ามเที่ยงคืน)
+function toMin(t) {
+    const [h, m] = t.split(':').map(Number);
+    const adj = h < 14 ? h + 24 : h; // 00-13 → 24-37
+    return (adj - 14) * 60 + m;
+}
+// แปลงนาทีกลับเป็น HH:mm
+function fromMin(min) {
+    const total = (min + 14 * 60);
+    const h = Math.floor(total / 60) % 24;
+    const m = total % 60;
+    return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+}
 
-    let dragging = false, dragStart = null;
+async function renderTimeline() {
+    const roomId = document.querySelector('input[name="RoomId"]:checked')?.value;
+    const date   = document.getElementById('inputDate').value;
 
-    document.getElementById('tlWrap').innerHTML =
-        `<div id="tlGrid" style="display:grid;grid-template-columns:repeat(${slots.length},1fr);gap:2px;user-select:none;">
-        ${slots.map((s,i) => `<div class="tl-slot" data-i="${i}" data-t="${s}"
-            style="height:40px;border-radius:2px;background:var(--ns-bg3);cursor:pointer;position:relative;">
-            ${i%4===0?`<span style="position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:.55rem;color:var(--ns-ink3);white-space:nowrap;">${s}</span>`:''}
-        </div>`).join('')}
-        </div><div style="height:24px;"></div>`;
+    let booked = [];
+    if (roomId && date) {
+        try {
+            const res = await fetch(`/User/GetBookedSlots?roomId=${roomId}&date=${date}`);
+            booked = await res.json();
+        } catch(e) { booked = []; }
+    }
 
-    const grid = document.getElementById('tlGrid');
+    // สร้าง slots ทุก 30 นาที 14:00–02:00 (= 24 slots)
+    const SLOT_MIN = 30;
+    const TOTAL_SLOTS = 24; // 12 ชั่วโมง × 2
+    const slotLabels = [];
+    for (let i = 0; i < TOTAL_SLOTS; i++) {
+        slotLabels.push(fromMin(i * SLOT_MIN));
+    }
 
-    function highlight(from, to) {
-        const mn = Math.min(from,to), mx = Math.max(from,to);
+    // mark booked slots
+    const bookedIdx = new Set();
+    booked.forEach(b => {
+        const sMin = toMin(b.start);
+        // endTime ข้ามเที่ยงคืน: ถ้า end < start ให้บวก 24h
+        let eMin = toMin(b.end);
+        if (eMin <= sMin) eMin += 24 * 60;
+        const si = Math.floor(sMin / SLOT_MIN);
+        const ei = Math.ceil(eMin / SLOT_MIN);
+        for (let i = si; i < ei && i < TOTAL_SLOTS; i++) bookedIdx.add(i);
+    });
+
+    let dragStart = null, dragEnd = null, isDragging = false;
+
+    function renderSlots() {
+        const mn = dragStart !== null && dragEnd !== null ? Math.min(dragStart, dragEnd) : -1;
+        const mx = dragStart !== null && dragEnd !== null ? Math.max(dragStart, dragEnd) : -1;
+
+        document.getElementById('tlGrid').innerHTML = slotLabels.map((label, i) => {
+            const isBooked   = bookedIdx.has(i);
+            const isSelected = !isBooked && mn >= 0 && i >= mn && i <= mx;
+            const showLabel  = i % 2 === 0; // แสดง label ทุก 1 ชั่วโมง
+
+            let bg     = isBooked ? 'var(--ns-ink2)' : isSelected ? 'var(--ns-ink)' : 'var(--ns-bg3)';
+            let cursor = isBooked ? 'not-allowed' : 'pointer';
+            let opacity= isBooked ? '.4' : '1';
+
+            return `<div class="tl-slot${isBooked?' booked':''}"
+                data-i="${i}"
+                style="flex:0 0 auto;width:52px;height:44px;border-radius:3px;
+                background:${bg};cursor:${cursor};opacity:${opacity};
+                position:relative;flex-shrink:0;transition:background .08s;">
+                ${showLabel ? `<span style="position:absolute;bottom:-17px;left:0;right:0;
+                    text-align:center;font-size:.58rem;color:var(--ns-ink3);
+                    white-space:nowrap;">${label}</span>` : ''}
+            </div>`;
+        }).join('');
+
+        attachSlotEvents();
+    }
+
+    function attachSlotEvents() {
+        const grid = document.getElementById('tlGrid');
         grid.querySelectorAll('.tl-slot').forEach(el => {
-            el.style.background = (+el.dataset.i >= mn && +el.dataset.i <= mx)
-                ? 'var(--ns-ink)' : 'var(--ns-bg3)';
+            el.addEventListener('mousedown', e => {
+                if (el.classList.contains('booked')) return;
+                isDragging = true;
+                dragStart = dragEnd = +el.dataset.i;
+                renderSlots();
+                updateSelection();
+                e.preventDefault();
+            });
+            el.addEventListener('mouseenter', () => {
+                if (!isDragging || el.classList.contains('booked')) return;
+                dragEnd = +el.dataset.i;
+                renderSlots();
+                updateSelection();
+            });
         });
-        const span = mx - mn + 1;
-        document.getElementById('tlMinWarning').classList.toggle('d-none', span >= 4);
-        document.getElementById('confirmStep4').disabled = span < 4;
-        if (span >= 4) {
-            document.getElementById('inputStart').value = slots[mn];
-            document.getElementById('inputEnd').value   = slots[mx+1] || '02:00';
-            document.getElementById('sv4').textContent  = slots[mn] + ' – ' + (slots[mx+1] || '02:00');
+    }
+
+    function updateSelection() {
+        if (dragStart === null || dragEnd === null) return;
+        const mn = Math.min(dragStart, dragEnd);
+        const mx = Math.max(dragStart, dragEnd);
+
+        // เช็คว่าไม่ทับ booked
+        for (let i = mn; i <= mx; i++) {
+            if (bookedIdx.has(i)) {
+                document.getElementById('tlMinWarning').textContent = '⚠ ช่วงเวลาที่เลือกทับกับการจองที่มีอยู่';
+                document.getElementById('tlMinWarning').classList.remove('d-none');
+                document.getElementById('confirmStep4').disabled = true;
+                return;
+            }
+        }
+
+        const span     = mx - mn + 1;
+        const minSlots = 2; // ขั้นต่ำ 1 ชม. (2 slots × 30 นาที)
+        const startLbl = slotLabels[mn];
+        const endIdx   = mx + 1;
+        const endLbl   = endIdx < TOTAL_SLOTS ? slotLabels[endIdx] : '02:00';
+
+        if (span < minSlots) {
+            document.getElementById('tlMinWarning').textContent = '⚠ กรุณาเลือกอย่างน้อย 1 ชั่วโมง';
+            document.getElementById('tlMinWarning').classList.remove('d-none');
+            document.getElementById('confirmStep4').disabled = true;
+        } else {
+            document.getElementById('tlMinWarning').classList.add('d-none');
+            document.getElementById('confirmStep4').disabled = false;
+            document.getElementById('inputStart').value = startLbl;
+            document.getElementById('inputEnd').value   = endLbl;
+            document.getElementById('sv4').textContent  = startLbl + ' – ' + endLbl;
         }
     }
 
-    grid.addEventListener('mousedown', e => {
-        const s = e.target.closest('.tl-slot'); if (!s) return;
-        dragging = true; dragStart = +s.dataset.i; highlight(dragStart, dragStart);
-    });
-    grid.addEventListener('mousemove', e => {
-        if (!dragging) return;
-        const s = e.target.closest('.tl-slot'); if (!s) return;
-        highlight(dragStart, +s.dataset.i);
-    });
-    document.addEventListener('mouseup', () => { dragging = false; });
+    document.addEventListener('mouseup', () => { isDragging = false; });
+
+    // สร้าง HTML wrapper แบบ scroll
+    document.getElementById('tlWrap').innerHTML = `
+        <div style="overflow-x:auto;padding-bottom:24px;">
+            <div id="tlGrid" style="display:flex;gap:3px;min-width:max-content;user-select:none;"></div>
+        </div>`;
+
+    renderSlots();
 }
 
 // ══ SUBMIT ═══════════════════════════════════════════════
@@ -148,9 +276,9 @@ function submitBooking() {
 document.addEventListener('DOMContentLoaded', () => {
     const cal = document.getElementById('calMonth');
     if (cal) {
-        // ถ้ามีวันที่เลือกไว้แล้ว (กรณี validation fail)
         const existing = document.getElementById('inputDate')?.value;
         if (existing) selDate = existing;
         renderCal();
+        loadFullyBookedDates();
     }
 });

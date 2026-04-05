@@ -1,3 +1,107 @@
 @{
     Layout = "_AdminLayout";
+    ViewBag.Title = "Heatmap";
+    var dows       = (string[])ViewBag.Dows;
+    var heatHours  = (List<string>)ViewBag.HeatHours;
+    var mat        = (int[,])ViewBag.HeatMat;
+    var heatMax    = (int)ViewBag.HeatMax;
+    var peakHours  = (List<string>)ViewBag.PeakHours;
+    var peakCounts = (List<int>)ViewBag.PeakCounts;
+    var dowDays    = (List<string>)ViewBag.DowDays;
+    var dowCounts  = (List<int>)ViewBag.DowCounts;
+}
+
+<div class="p-4" style="position:relative;z-index:1;">
+
+    <div class="pg-ttl">Heatmap</div>
+    <p class="pg-sub mb-4">ความหนาแน่นการจองตามวันและเวลา</p>
+
+    @* Heatmap Grid *@
+    <div class="cc mb-3">
+        <div class="cc-ttl">การจองตามวันและช่วงเวลา</div>
+        <div style="overflow-x:auto;">
+            <div style="display:grid;grid-template-columns:32px repeat(@heatHours.Count, 1fr);gap:3px;min-width:520px;">
+                @* header *@
+                <div></div>
+                @foreach (var h in heatHours)
+                {
+                    <div style="font-size:.55rem;color:var(--ns-ink3);text-align:center;padding-bottom:3px;font-family:'Kanit',sans-serif;">@h.Substring(0,2)</div>
+                }
+                @* rows *@
+                @for (int d = 0; d < 7; d++)
+                {
+                    <div style="font-size:.65rem;color:var(--ns-ink3);display:flex;align-items:center;justify-content:flex-end;padding-right:4px;font-family:'Kanit',sans-serif;">@dows[d]</div>
+                    @for (int h = 0; h < heatHours.Count; h++)
+                    {
+                        var v   = mat[d, h];
+                        var op  = v > 0 ? 0.1 + (double)v / heatMax * 0.85 : 0.04;
+                        var tip = $"{dows[d]} {heatHours[h]} — {v} การจอง";
+                        <div title="@tip"
+                             style="aspect-ratio:1;border-radius:3px;
+                             background:rgba(28,28,26,@op.ToString("F2", System.Globalization.CultureInfo.InvariantCulture));">
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 mt-3" style="font-size:.7rem;color:var(--ns-ink3);">
+            <span>น้อย</span>
+            @for (int i = 1; i <= 5; i++)
+            {
+                var op = 0.08 + i * 0.17;
+                <div style="width:16px;height:16px;border-radius:2px;background:rgba(28,28,26,@op.ToString("F2", System.Globalization.CultureInfo.InvariantCulture));"></div>
+            }
+            <span>มาก</span>
+        </div>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-12 col-lg-6">
+            <div class="cc h-100">
+                <div class="cc-ttl">การจองตามช่วงเวลา (เฉลี่ย)</div>
+                <div style="height:200px;"><canvas id="cPeak"></canvas></div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="cc h-100">
+                <div class="cc-ttl">การจองตามวันในสัปดาห์</div>
+                <div style="height:200px;"><canvas id="cDow"></canvas></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+<script>
+const INK = '#1C1C1A';
+const peakHours  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(peakHours));
+const peakCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(peakCounts));
+const dowDays    = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(dowDays));
+const dowCounts  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(dowCounts));
+
+new Chart(document.getElementById('cPeak'), {
+    type: 'line',
+    data: { labels: peakHours, datasets: [{ data: peakCounts,
+        borderColor: INK, backgroundColor: INK+'14', borderWidth:2,
+        fill:true, tension:0.35, pointRadius:2 }] },
+    options: { responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{ x:{grid:{display:false},ticks:{font:{size:9}}},
+                 y:{grid:{color:'rgba(28,28,26,.06)'},border:{display:false},
+                    ticks:{font:{size:9}}} } }
+});
+
+new Chart(document.getElementById('cDow'), {
+    type: 'bar',
+    data: { labels: dowDays, datasets: [{ data: dowCounts,
+        backgroundColor: dowCounts.map((_,i)=> i===5||i===6 ? INK : INK+'55'),
+        borderRadius:3, borderSkipped:false }] },
+    options: { responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{ x:{grid:{display:false},ticks:{font:{size:11}}},
+                 y:{grid:{color:'rgba(28,28,26,.06)'},border:{display:false},
+                    ticks:{font:{size:9}}} } }
+});
+</script>
 }

@@ -1,6 +1,123 @@
+@model IEnumerable<newkaraoke.Models.db.Log>
 @{
     Layout = "_ITLayout";
+    ViewBag.Title = "Activity Log";
+    ViewBag.ActiveNav = "logs";
+    string actionFilter = ViewBag.ActionFilter as string ?? "";
+    string entityFilter = ViewBag.EntityFilter as string ?? "";
 }
-<div>
-    
+
+<div class="p-4" style="position:relative;z-index:1;">
+
+    <div class="pg-ttl">Activity Log</div>
+    <p class="pg-sub mb-3">บันทึกกิจกรรมในระบบทั้งหมด</p>
+
+    <div class="tc">
+        <div class="th">
+            <div class="th-ttl">Log ทั้งหมด (@ViewBag.Total รายการ)</div>
+            <form method="get" asp-action="Logs" class="d-flex gap-2 flex-wrap align-items-center">
+                <select class="ti" name="actionFilter" style="width:160px;" onchange="this.form.submit()">
+                    <option value="">Action ทั้งหมด</option>
+                    @foreach (var a in (List<string>)ViewBag.Actions)
+                    {
+                        if (a == actionFilter)
+                        { <option value="@a" selected>@a</option> }
+                        else
+                        { <option value="@a">@a</option> }
+                    }
+                </select>
+                <select class="ti" name="entity" style="width:140px;" onchange="this.form.submit()">
+                    <option value="">Entity ทั้งหมด</option>
+                    @foreach (var e in (List<string>)ViewBag.Entities)
+                    {
+                        if (e == entityFilter)
+                        { <option value="@e" selected>@e</option> }
+                        else
+                        { <option value="@e">@e</option> }
+                    }
+                </select>
+                @if (!string.IsNullOrEmpty(actionFilter) || !string.IsNullOrEmpty(entityFilter))
+                {
+                    <a asp-action="Logs" class="ab sm" style="text-decoration:none;">ล้าง</a>
+                }
+            </form>
+        </div>
+
+        <div class="table-responsive">
+            <table class="tbl">
+                <thead>
+                    <tr>
+                        <th>เวลา</th>
+                        <th>ผู้ใช้</th>
+                        <th>Action</th>
+                        <th>Entity</th>
+                        <th>รายละเอียด</th>
+                        <th>IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr><td colspan="6" class="text-center p-4 text-secondary small">ยังไม่มี Log</td></tr>
+                    }
+                    @foreach (var log in Model)
+                    {
+                        <tr>
+                            <td style="font-size:.72rem;color:var(--ns-ink3);white-space:nowrap;">
+                                @(log.CreatedAt?.ToString("dd/MM/yy HH:mm:ss") ?? "—")
+                            </td>
+                            <td>
+                                @if (log.User != null)
+                                {
+                                    <div style="font-size:.8rem;font-weight:600;">@log.User.Name</div>
+                                    <div><span class="role-tag rt-@log.User.Role.ToLower()" style="font-size:.6rem;">@log.User.Role</span></div>
+                                }
+                                else
+                                {
+                                    <span style="font-size:.72rem;color:var(--ns-ink3);">ระบบ</span>
+                                }
+                            </td>
+                            <td>
+                                <span style="font-family:'Kanit',sans-serif;font-size:.75rem;font-weight:600;
+                                    padding:2px 7px;border-radius:3px;background:rgba(28,28,26,.06);">
+                                    @log.Action
+                                </span>
+                            </td>
+                            <td style="font-size:.78rem;">
+                                @if (!string.IsNullOrEmpty(log.Entity))
+                                {
+                                    <span>@log.Entity</span>
+                                    @if (log.EntityId.HasValue)
+                                    { <span style="color:var(--ns-ink3);"> #@log.EntityId</span> }
+                                }
+                                else { <span style="color:var(--ns-ink3);">—</span> }
+                            </td>
+                            <td style="font-size:.75rem;color:var(--ns-ink3);max-width:300px;word-break:break-word;">
+                                @(log.Description ?? "—")
+                            </td>
+                            <td style="font-size:.72rem;color:var(--ns-ink3);">@(log.IpAddress ?? "—")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        @if ((int)ViewBag.TotalPages > 1)
+        {
+            <div class="px-3 py-2 d-flex gap-2 align-items-center flex-wrap">
+                @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
+                {
+                    <a asp-action="Logs" asp-route-page="@i"
+                       asp-route-actionFilter="@actionFilter"
+                       asp-route-entity="@entityFilter"
+                       style="text-decoration:none;padding:4px 10px;border-radius:3px;font-size:.8rem;
+                       @(i == (int)ViewBag.Page ? "background:var(--ns-ink);color:var(--ns-bg);" : "border:1px solid var(--ns-border-md);color:var(--ns-ink);")">
+                        @i
+                    </a>
+                }
+                <span class="text-secondary small ms-2">หน้า @ViewBag.Page / @ViewBag.TotalPages</span>
+            </div>
+        }
+    </div>
+
 </div>

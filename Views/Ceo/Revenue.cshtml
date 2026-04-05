@@ -1,3 +1,153 @@
 @{
     Layout = "_AdminLayout";
+    ViewBag.Title = "รายรับ";
+    var totalRev  = (decimal)ViewBag.TotalRev;
+    var prevRev   = (decimal)ViewBag.PrevRev;
+    var totalBk   = (int)ViewBag.TotalBk;
+    var avgPerBk  = (decimal)ViewBag.AvgPerBk;
+    var delta     = prevRev > 0 ? (totalRev - prevRev) / prevRev * 100 : 0;
+    var dailyDates= (List<string>)ViewBag.DailyDates;
+    var dailyRevs = (List<decimal>)ViewBag.DailyRevs;
+    var roomNames = (List<string>)ViewBag.RoomNames;
+    var roomRevs  = (List<decimal>)ViewBag.RoomRevs;
+    var roomCounts= (List<int>)ViewBag.RoomCounts;
+}
+
+<div class="p-4" style="position:relative;z-index:1;">
+
+    <div class="pg-ttl">รายรับ</div>
+    <p class="pg-sub mb-4">ภาพรวมรายรับและการจองในช่วงเวลาที่เลือก</p>
+
+    @* KPI *@
+    <div class="kpi-grid mb-4">
+        <div class="kpi">
+            <div class="kpi-lbl">รายรับรวม</div>
+            <div class="kpi-val">฿@totalRev.ToString("N0")</div>
+            <div class="kpi-d">
+                @if (prevRev > 0)
+                {
+                    <span class="@(delta >= 0 ? "du" : "dd")">
+                        @(delta >= 0 ? "+" : "")@delta.ToString("F1")% vs ช่วงก่อน
+                    </span>
+                }
+                else { <span class="dn">—</span> }
+            </div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-lbl">การจองทั้งหมด</div>
+            <div class="kpi-val">@totalBk</div>
+            <div class="kpi-d"><span class="dn">รายการที่ยืนยัน</span></div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-lbl">เฉลี่ย / การจอง</div>
+            <div class="kpi-val">฿@avgPerBk.ToString("N0")</div>
+            <div class="kpi-d"><span class="dn">—</span></div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-lbl">ห้องยอดนิยม</div>
+            <div class="kpi-val" style="font-size:1.1rem;">@(roomNames.FirstOrDefault() ?? "—")</div>
+            <div class="kpi-d"><span class="dn">รายรับสูงสุด</span></div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+        @* รายรับรายวัน *@
+        <div class="col-12">
+            <div class="cc">
+                <div class="cc-ttl">รายรับรายวัน</div>
+                <div style="height:220px;">
+                    <canvas id="cRevDay"></canvas>
+                </div>
+            </div>
+        </div>
+
+        @* รายรับตามห้อง *@
+        <div class="col-12 col-lg-6">
+            <div class="cc h-100">
+                <div class="cc-ttl">รายรับตามห้อง</div>
+                <div style="height:200px;">
+                    <canvas id="cRevRoom"></canvas>
+                </div>
+            </div>
+        </div>
+
+        @* จำนวนการจองตามห้อง *@
+        <div class="col-12 col-lg-6">
+            <div class="cc h-100">
+                <div class="cc-ttl">จำนวนการจองตามห้อง</div>
+                <div style="height:200px;">
+                    <canvas id="cBkRoom"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ตารางห้อง *@
+    <div class="tc">
+        <div class="th"><div class="th-ttl">สรุปรายรับตามห้อง</div></div>
+        <div class="table-responsive">
+            <table class="tbl">
+                <thead>
+                    <tr><th>#</th><th>ห้อง</th><th>การจอง</th><th>รายรับ</th><th>เฉลี่ย/จอง</th></tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < roomNames.Count; i++)
+                    {
+                        <tr>
+                            <td style="color:var(--ns-ink3);font-size:.75rem;">@(i+1)</td>
+                            <td style="font-weight:600;">@roomNames[i]</td>
+                            <td>@roomCounts[i]</td>
+                            <td style="font-family:'Kanit',sans-serif;font-weight:700;">฿@roomRevs[i].ToString("N0")</td>
+                            <td style="font-family:'Kanit',sans-serif;color:var(--ns-ink3);">
+                                ฿@(roomCounts[i] > 0 ? (roomRevs[i]/roomCounts[i]).ToString("N0") : "0")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+<script>
+const INK = '#1C1C1A';
+const dailyDates = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(dailyDates));
+const dailyRevs  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(dailyRevs));
+const roomNames  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(roomNames));
+const roomRevs   = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(roomRevs));
+const roomCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(roomCounts));
+const COLORS = ['#1C1C1A','#3A3A36','#6B6B65','#9B9990','#BDBAB2','#DEDAD2'];
+
+new Chart(document.getElementById('cRevDay'), {
+    type: 'bar',
+    data: { labels: dailyDates, datasets: [{ data: dailyRevs,
+        backgroundColor: INK+'22', borderColor: INK, borderWidth:1.5, borderRadius:2 }] },
+    options: { responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{ x:{grid:{display:false},ticks:{font:{size:9},maxRotation:0,autoSkip:true}},
+                 y:{grid:{color:'rgba(28,28,26,.06)'},border:{display:false},
+                    ticks:{callback:v=>'฿'+v.toLocaleString(),font:{size:9}}} } }
+});
+
+new Chart(document.getElementById('cRevRoom'), {
+    type: 'bar',
+    data: { labels: roomNames, datasets: [{ data: roomRevs,
+        backgroundColor: COLORS.slice(0, roomNames.length), borderRadius:3, borderSkipped:false }] },
+    options: { responsive:true, maintainAspectRatio:false, indexAxis:'y',
+        plugins:{ legend:{display:false} },
+        scales:{ x:{grid:{color:'rgba(28,28,26,.06)'},border:{display:false},
+                    ticks:{callback:v=>'฿'+v.toLocaleString(),font:{size:9}}},
+                 y:{grid:{display:false},ticks:{font:{size:9}}} } }
+});
+
+new Chart(document.getElementById('cBkRoom'), {
+    type: 'doughnut',
+    data: { labels: roomNames, datasets: [{ data: roomCounts,
+        backgroundColor: COLORS.slice(0, roomNames.length), borderWidth:0 }] },
+    options: { responsive:true, maintainAspectRatio:false, cutout:'60%',
+        plugins:{ legend:{position:'right',labels:{font:{size:10},boxWidth:10}} } }
+});
+</script>
 }

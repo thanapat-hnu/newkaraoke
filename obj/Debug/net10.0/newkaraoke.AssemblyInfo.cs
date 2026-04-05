@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("newkaraoke")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e631650a282cf9769c051e1471435e48f5e7cfd4")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ae8b246b77586937d50cd572016a18a85343d50")]
 [assembly: System.Reflection.AssemblyProductAttribute("newkaraoke")]
 [assembly: System.Reflection.AssemblyTitleAttribute("newkaraoke")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

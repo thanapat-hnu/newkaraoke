@@ -1,3 +1,131 @@
 @{
     Layout = "_AdminLayout";
+    ViewBag.Title = "ลูกค้า";
+    int    totalCustomers = (int)ViewBag.TotalCustomers;
+    int    newCustomers   = (int)ViewBag.NewCustomers;
+    int    returning      = (int)ViewBag.Returning;
+    var    newDates       = (List<string>)ViewBag.NewDates;
+    var    newCounts      = (List<int>)ViewBag.NewCounts;
+    int    retPct         = totalCustomers > 0 ? (int)Math.Round((decimal)returning / totalCustomers * 100) : 0;
+}
+
+<div class="p-4" style="position:relative;z-index:1;">
+    <div class="pg-ttl">ลูกค้า</div>
+    <p class="pg-sub mb-4">ข้อมูลลูกค้าและพฤติกรรมการใช้งาน</p>
+
+    <div class="kpi-grid mb-4">
+        <div class="kpi">
+            <div class="kpi-lbl">ลูกค้าทั้งหมด</div>
+            <div class="kpi-val">@totalCustomers</div>
+            <div class="kpi-d"><span class="dn">รายชื่อในระบบ</span></div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-lbl">ลูกค้าใหม่</div>
+            <div class="kpi-val">@newCustomers</div>
+            <div class="kpi-d"><span class="dn">มาครั้งแรกในช่วงนี้</span></div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-lbl">ลูกค้าประจำ</div>
+            <div class="kpi-val">@returning</div>
+            <div class="kpi-d"><span class="dn">กลับมาจองซ้ำ</span></div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-lbl">อัตราส่วน</div>
+            <div class="kpi-val" style="font-size:1.3rem;">@retPct%</div>
+            <div class="kpi-d"><span class="dn">ลูกค้าประจำ</span></div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-12 col-lg-5">
+            <div class="cc h-100">
+                <div class="cc-ttl">สมาชิกใหม่ 14 วันล่าสุด</div>
+                <div style="height:180px;"><canvas id="cNew"></canvas></div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-3">
+            <div class="cc h-100">
+                <div class="cc-ttl">ใหม่ vs ประจำ</div>
+                <div style="height:180px;"><canvas id="cNewRet"></canvas></div>
+            </div>
+        </div>
+        <div class="col-12 col-lg-4">
+            <div class="cc h-100">
+                <div class="cc-ttl">สรุป</div>
+                <div class="d-flex flex-column gap-2 mt-2">
+                    @{
+                        var top1 = ((IEnumerable<dynamic>)ViewBag.TopCustomers).FirstOrDefault();
+                    }
+                    <div style="font-size:.8rem;">
+                        <span class="d-block" style="color:var(--ns-ink3);font-size:.65rem;letter-spacing:1px;">ลูกค้า Top spender</span>
+                        @if (top1 != null)
+                        {
+                            decimal rev1 = (decimal)top1.TotalRev;
+                            <strong style="font-family:'Kanit',sans-serif;">@top1.Name</strong>
+                            <span style="color:var(--ns-ink3);font-size:.75rem;"> · ฿@rev1.ToString("N0")</span>
+                        }
+                        else { <span style="color:var(--ns-ink3);">—</span> }
+                    </div>
+                    <hr style="margin:.5rem 0;opacity:.15;">
+                    <div style="font-size:.78rem;color:var(--ns-ink3);">
+                        จองในช่วงนี้: <strong style="color:var(--ns-ink);">@newCustomers คน</strong>
+                    </div>
+                    <div style="font-size:.78rem;color:var(--ns-ink3);">
+                        กลับมาซ้ำ: <strong style="color:var(--ns-ink);">@returning คน</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tc">
+        <div class="th"><div class="th-ttl">Top 20 ลูกค้า (ยอดใช้จ่ายสูงสุด)</div></div>
+        <div class="table-responsive">
+            <table class="tbl">
+                <thead>
+                    <tr><th>#</th><th>ชื่อ</th><th>อีเมล</th><th>เบอร์</th><th>สมัครเมื่อ</th><th>จอง</th><th>ยอดรวม</th><th>จองล่าสุด</th></tr>
+                </thead>
+                <tbody>
+                @{ int rank = 1; }
+                @foreach (var c in ViewBag.TopCustomers)
+                {
+                    decimal cRev = (decimal)c.TotalRev;
+                    int     cBk  = (int)c.TotalBk;
+                    <tr>
+                        <td style="color:var(--ns-ink3);font-size:.75rem;font-family:'Kanit',sans-serif;font-weight:700;">@rank</td>
+                        <td style="font-weight:600;">@c.Name</td>
+                        <td style="font-size:.75rem;color:var(--ns-ink3);">@c.Email</td>
+                        <td style="font-size:.75rem;color:var(--ns-ink3);">@(c.Phone ?? "—")</td>
+                        <td style="font-size:.75rem;color:var(--ns-ink3);">@c.JoinedAt</td>
+                        <td style="font-family:'Kanit',sans-serif;">@cBk</td>
+                        <td style="font-family:'Kanit',sans-serif;font-weight:700;">฿@cRev.ToString("N0")</td>
+                        <td style="font-size:.75rem;color:var(--ns-ink3);">@c.LastBk</td>
+                    </tr>
+                    rank++;
+                }
+                @if (rank == 1)
+                {
+                    <tr><td colspan="8" class="text-center p-4 text-secondary small">ยังไม่มีข้อมูล</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+const INK = '#1C1C1A';
+const newDates  = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(newDates));
+const newCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(newCounts));
+new Chart(document.getElementById('cNew'), {
+    type:'bar', data:{labels:newDates,datasets:[{data:newCounts,backgroundColor:INK+'33',borderColor:INK,borderWidth:1.5,borderRadius:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'rgba(28,28,26,.06)'},border:{display:false},ticks:{stepSize:1,font:{size:9}}}}}
+});
+new Chart(document.getElementById('cNewRet'), {
+    type:'doughnut', data:{labels:['ลูกค้าใหม่','ลูกค้าประจำ'],datasets:[{data:[@newCustomers,@returning],backgroundColor:['#1C1C1A','#BDBAB2'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:10}}}}
+});
+</script>
 }
